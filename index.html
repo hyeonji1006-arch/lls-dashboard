@@ -486,7 +486,7 @@ function compute(orders) {
     const r = normalizeRegion(o.addr);
     reg[r] = (reg[r] || 0) + o.paid;
   });
-  return { ch, reg, tList, tPaid, tFee, tCost, tContrib: tPaid - tFee };
+  return { ch, reg, tList, tPaid, tFee, tCost, tContrib: tPaid - tFee - tCost };
 }
 
 function updateKPIs(d) {
@@ -545,7 +545,7 @@ function updateStackBar(d) {
   const costRate = d.tPaid>0 ? (d.tCost/d.tPaid*100).toFixed(1) : '0.0';
   const cRate    = d.tPaid>0 ? (d.tContrib/d.tPaid*100).toFixed(1) : '0.0';
   document.getElementById('sbContrib').textContent = fmt(d.tContrib)+'원';
-  document.getElementById('sbContribSub').textContent = '이익률 '+cRate+'%';
+  document.getElementById('sbContribSub').textContent = '실결제 – 수수료 – 원가 | 이익률 '+cRate+'%';
   document.getElementById('sbFee').textContent = fmt(d.tFee)+'원';
   document.getElementById('sbFeeSub').textContent = '수수료율 '+feeRate+'%';
   document.getElementById('sbCost').textContent = fmt(d.tCost)+'원';
@@ -560,7 +560,7 @@ function updateRankTable(d) {
   ];
   document.getElementById('rankTableBody').innerHTML = sorted.map(([ch,v],i) => {
     const b = badges[i]||badges[3];
-    const contrib = v.paidRev - v.fee;
+    const contrib = v.paidRev - v.fee - v.cost;
     return `<tr>
       <td>
         <div style="display:flex;align-items:center">
