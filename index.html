@@ -8,78 +8,79 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f4f5f7; color: #1a1a2e; min-height: 100vh; }
-
     header { background: #fff; border-bottom: 1px solid #e8e8e8; padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-    header .logo { font-size: 16px; font-weight: 700; letter-spacing: 0.1em; color: #1a1a2e; }
-
-    .main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .page-title { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+    header .logo { font-size: 16px; font-weight: 700; letter-spacing: 0.08em; }
+    .main { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
     .page-sub { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
 
     /* 날짜 필터 */
     .filter-bar { background: #fff; border-radius: 16px; border: 1px solid #f0f0f0; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
     .filter-label { font-size: 12px; font-weight: 600; color: #999; white-space: nowrap; }
-    .month-tabs { display: flex; gap: 6px; }
-    .month-tab { padding: 5px 14px; border-radius: 20px; font-size: 12px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #666; transition: all 0.15s; }
+    .month-tab { padding: 5px 14px; border-radius: 20px; font-size: 12px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #666; }
     .month-tab.active { background: #185FA5; color: #fff; border-color: #185FA5; }
     .date-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-    .date-tab { padding: 5px 12px; border-radius: 10px; font-size: 12px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #444; text-align: center; transition: all 0.15s; min-width: 52px; }
-    .date-tab .day-num { font-weight: 700; font-size: 13px; display: block; }
-    .date-tab .day-name { font-size: 10px; color: #aaa; }
+    .date-tab { padding: 5px 12px; border-radius: 10px; font-size: 12px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #444; text-align: center; min-width: 52px; transition: all 0.15s; }
+    .date-tab .dn { font-weight: 700; font-size: 13px; display: block; }
+    .date-tab .dw { font-size: 10px; color: #aaa; }
+    .date-tab.sat .dw { color: #185FA5; }
+    .date-tab.sun .dw { color: #E24B4A; }
     .date-tab.active { background: #185FA5; color: #fff; border-color: #185FA5; }
-    .date-tab.active .day-name { color: #b5d4f4; }
-    .date-tab.sat .day-name { color: #185FA5; }
-    .date-tab.sun .day-name { color: #E24B4A; }
-    .date-tab.active.sat .day-name, .date-tab.active.sun .day-name { color: #fff; }
-    .date-tab.all-tab { font-weight: 600; font-size: 12px; line-height: 2.2; }
+    .date-tab.active .dw { color: rgba(255,255,255,0.75); }
+    .date-tab.all-tab { line-height: 2.6; font-weight: 600; }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 1.5rem; }
-    .kpi-card { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid #f0f0f0; }
-    .kpi-label { font-size: 12px; color: #999; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-    .kpi-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-    .kpi-value { font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1; margin-bottom: 8px; }
-    .kpi-value span { font-size: 14px; font-weight: 400; color: #999; margin-left: 2px; }
+    /* KPI */
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .kpi-card { background: #fff; border-radius: 16px; padding: 1.25rem; border: 1px solid #f0f0f0; }
+    .kpi-label { font-size: 11px; color: #999; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    .kpi-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .kpi-value { font-size: 22px; font-weight: 700; color: #1a1a2e; line-height: 1; margin-bottom: 6px; }
+    .kpi-value span { font-size: 12px; font-weight: 400; color: #999; margin-left: 2px; }
     .kpi-sub { font-size: 11px; color: #aaa; }
     .kpi-sub .up { color: #22c55e; font-weight: 600; }
     .kpi-sub .down { color: #ef4444; font-weight: 600; }
 
+    /* Cards */
     .chart-row { display: grid; gap: 16px; margin-bottom: 1.5rem; }
     .chart-row-2 { grid-template-columns: 1fr 1fr; }
     .card { background: #fff; border-radius: 16px; padding: 1.5rem; border: 1px solid #f0f0f0; }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
     .card-title { font-size: 13px; font-weight: 600; color: #555; }
     .chart-wrap { position: relative; width: 100%; }
-
-    /* 토글 버튼 */
     .toggle-group { display: flex; gap: 4px; }
-    .toggle-btn { padding: 4px 10px; border-radius: 8px; font-size: 11px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #888; transition: all 0.15s; }
+    .toggle-btn { padding: 4px 10px; border-radius: 8px; font-size: 11px; border: 1px solid #e8e8e8; cursor: pointer; background: #fff; color: #888; }
     .toggle-btn.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
-    .toggle-btn.green.active { background: #1D9E75; border-color: #1D9E75; }
-    .toggle-btn.red.active { background: #f09595; border-color: #f09595; color: #8b2a2a; }
+    .toggle-btn.g.active { background: #1D9E75; border-color: #1D9E75; }
+    .toggle-btn.r.active { background: #f09595; border-color: #f09595; color: #8b2a2a; }
 
-    .rank-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .rank-table th { font-size: 11px; color: #aaa; font-weight: 500; text-align: left; padding: 0 0 10px; border-bottom: 1px solid #f0f0f0; }
+    /* Rank table */
+    .rank-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .rank-table th { font-size: 11px; color: #aaa; font-weight: 500; text-align: left; padding: 0 0 8px; border-bottom: 1px solid #f0f0f0; }
     .rank-table th:not(:first-child) { text-align: right; }
-    .rank-table td { padding: 10px 0; border-bottom: 1px solid #f8f8f8; vertical-align: middle; }
+    .rank-table td { padding: 9px 0; border-bottom: 1px solid #f8f8f8; vertical-align: middle; }
     .rank-table td:not(:first-child) { text-align: right; }
-    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-right: 8px; }
-    .ch-name { font-weight: 600; color: #1a1a2e; }
-    .ch-sub { font-size: 11px; color: #aaa; }
-    .num-main { font-weight: 600; color: #1a1a2e; font-size: 13px; }
-    .num-sub { font-size: 11px; color: #aaa; }
-    .discount-bar-wrap { width: 100%; background: #f4f5f7; border-radius: 4px; height: 6px; margin-top: 4px; }
-    .discount-bar { height: 6px; border-radius: 4px; }
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; font-size: 10px; font-weight: 700; margin-right: 6px; }
+    .ch-name { font-weight: 600; }
+    .ch-sub { font-size: 10px; color: #aaa; }
+    .nm { font-weight: 600; font-size: 12px; }
+    .ns { font-size: 10px; color: #aaa; }
+    .dbar-wrap { width: 100%; background: #f4f5f7; border-radius: 3px; height: 5px; margin-top: 3px; }
+    .dbar { height: 5px; border-radius: 3px; }
 
+    /* Region list */
     .region-list { list-style: none; }
-    .region-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f8f8f8; }
+    .region-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f8f8f8; cursor: pointer; border-radius: 6px; padding: 7px 6px; transition: background 0.15s; }
+    .region-item:hover { background: #f4f5f7; }
     .region-item:last-child { border-bottom: none; }
-    .region-rank { font-size: 11px; font-weight: 700; color: #ccc; width: 20px; text-align: center; flex-shrink: 0; }
-    .region-rank.top { color: #185FA5; }
-    .region-name { font-size: 13px; font-weight: 600; color: #333; flex: 1; }
-    .region-bar-wrap { flex: 2; background: #f4f5f7; border-radius: 4px; height: 6px; }
-    .region-bar { height: 6px; border-radius: 4px; background: #185FA5; transition: width 0.3s; }
-    .region-amount { font-size: 12px; font-weight: 600; color: #333; width: 80px; text-align: right; flex-shrink: 0; }
+    .rrank { font-size: 11px; font-weight: 700; color: #ccc; width: 18px; text-align: center; flex-shrink: 0; }
+    .rrank.top { color: #185FA5; }
+    .rname { font-size: 13px; font-weight: 600; color: #333; flex: 1; }
+    .rbar-wrap { flex: 2; background: #f4f5f7; border-radius: 3px; height: 5px; }
+    .rbar { height: 5px; border-radius: 3px; background: #185FA5; }
+    .ramt { font-size: 12px; font-weight: 600; color: #333; width: 80px; text-align: right; flex-shrink: 0; }
+    .rdetail-icon { font-size: 10px; color: #bbb; flex-shrink: 0; }
 
+    /* Insights */
     .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
     .insight-card { background: #fff; border-radius: 14px; padding: 1.25rem; border-left: 4px solid; border-top: 1px solid #f0f0f0; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; }
     .insight-card.blue { border-left-color: #185FA5; }
@@ -88,6 +89,27 @@
     .insight-title { font-size: 11px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
     .insight-text { font-size: 13px; color: #444; line-height: 1.6; }
     .insight-text strong { color: #1a1a2e; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; align-items: flex-start; justify-content: flex-end; }
+    .modal-overlay.open { display: flex; }
+    .modal-panel { background: #fff; width: 480px; height: 100vh; overflow-y: auto; box-shadow: -4px 0 24px rgba(0,0,0,0.12); }
+    .modal-header { padding: 1.5rem; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; background: #fff; display: flex; align-items: center; justify-content: space-between; z-index: 1; }
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+    .modal-close { background: #f4f5f7; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px; color: #666; display: flex; align-items: center; justify-content: center; }
+    .modal-body { padding: 1rem 1.5rem; }
+    .gu-section { margin-bottom: 1.5rem; }
+    .gu-header { font-size: 12px; font-weight: 700; color: #185FA5; background: #e8f1fb; padding: 5px 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .order-row { padding: 8px 10px; border-radius: 8px; border: 1px solid #f4f5f7; margin-bottom: 6px; }
+    .order-building { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .order-detail { font-size: 11px; color: #888; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+    .tag-ch { background: #f4f5f7; color: #555; }
+    .tag-amt { background: #e8f7f1; color: #1D9E75; }
+    .tag-code { background: #fef3e8; color: #D85A30; }
+
     footer { text-align: center; font-size: 11px; color: #ccc; padding: 2rem; }
   </style>
 </head>
@@ -100,102 +122,98 @@
 
 <div class="main">
   <div class="page-title">매출 분석 대시보드</div>
-  <div class="page-sub">판매처별 실결제 매출 · 공헌이익 · 수수료 · 할인율 · 지역 분포</div>
+  <div class="page-sub">판매처별 실결제 매출 · 원가 · 수수료 · 공헌이익 · 할인율 · 지역 분포</div>
 
-  <!-- 날짜 필터 -->
   <div class="filter-bar">
     <div class="filter-label">월</div>
-    <div class="month-tabs">
-      <button class="month-tab active" data-month="2026-06">2026년 6월</button>
-    </div>
-    <div style="width:1px;height:24px;background:#eee"></div>
+    <div><button class="month-tab active">2026년 6월</button></div>
+    <div style="width:1px;height:22px;background:#eee"></div>
     <div class="filter-label">일자</div>
     <div class="date-tabs" id="dateTabs"></div>
   </div>
 
-  <!-- KPI -->
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-label"><span class="kpi-dot" style="background:#b5d4f4"></span>판매가 기준 매출</div>
       <div class="kpi-value" id="kpi1">–<span>원</span></div>
-      <div class="kpi-sub" id="kpi1s">–</div>
+      <div class="kpi-sub" id="kpi1s"></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label"><span class="kpi-dot" style="background:#185FA5"></span>실결제 기준 매출</div>
       <div class="kpi-value" id="kpi2">–<span>원</span></div>
-      <div class="kpi-sub" id="kpi2s">–</div>
+      <div class="kpi-sub" id="kpi2s"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label"><span class="kpi-dot" style="background:#f09595"></span>수수료</div>
+      <div class="kpi-label"><span class="kpi-dot" style="background:#BA7517"></span>원가 합계</div>
       <div class="kpi-value" id="kpi3">–<span>원</span></div>
-      <div class="kpi-sub" id="kpi3s">–</div>
+      <div class="kpi-sub" id="kpi3s"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label"><span class="kpi-dot" style="background:#1D9E75"></span>공헌이익</div>
-      <div class="kpi-value" id="kpi4" style="color:#1D9E75">–<span>원</span></div>
-      <div class="kpi-sub" id="kpi4s">–</div>
+      <div class="kpi-label"><span class="kpi-dot" style="background:#f09595"></span>수수료 합계</div>
+      <div class="kpi-value" id="kpi4">–<span>원</span></div>
+      <div class="kpi-sub" id="kpi4s"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot" style="background:#1D9E75"></span>공헌이익 (실결제 – 수수료)</div>
+      <div class="kpi-value" id="kpi5" style="color:#1D9E75">–<span>원</span></div>
+      <div class="kpi-sub" id="kpi5s"></div>
     </div>
   </div>
 
-  <!-- Charts row 1 -->
   <div class="chart-row chart-row-2">
     <div class="card">
       <div class="card-header">
         <div class="card-title">판매처별 매출 비중 (실결제 기준)</div>
       </div>
-      <div class="chart-wrap" style="height:220px">
+      <div class="chart-wrap" style="height:210px">
         <canvas id="donutChart" role="img" aria-label="판매처별 실결제 매출 도넛 차트"></canvas>
       </div>
-      <div id="donutLegend" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12px;color:#888"></div>
+      <div id="donutLegend" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:12px;color:#888"></div>
     </div>
-
     <div class="card">
       <div class="card-header">
         <div class="card-title">공헌이익 vs 수수료</div>
         <div class="toggle-group">
           <button class="toggle-btn active" id="btnAll" onclick="setProfitMode('all')">전체</button>
-          <button class="toggle-btn green" id="btnContrib" onclick="setProfitMode('contrib')">공헌이익</button>
-          <button class="toggle-btn red" id="btnFee" onclick="setProfitMode('fee')">수수료</button>
+          <button class="toggle-btn g" id="btnContrib" onclick="setProfitMode('contrib')">공헌이익</button>
+          <button class="toggle-btn r" id="btnFee" onclick="setProfitMode('fee')">수수료</button>
         </div>
       </div>
-      <div class="chart-wrap" style="height:220px">
+      <div class="chart-wrap" style="height:210px">
         <canvas id="stackBar" role="img" aria-label="채널별 공헌이익과 수수료 차트"></canvas>
       </div>
-      <div style="display:flex;gap:14px;margin-top:14px;font-size:12px;color:#888" id="profitLegend">
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>공헌이익</span>
-        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#f09595;display:inline-block"></span>수수료</span>
+      <div style="display:flex;gap:12px;margin-top:12px;font-size:12px;color:#888">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>공헌이익</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f09595;display:inline-block"></span>수수료</span>
       </div>
     </div>
   </div>
 
-  <!-- Charts row 2 -->
   <div class="chart-row chart-row-2">
     <div class="card">
       <div class="card-header"><div class="card-title">판매처별 상세 현황</div></div>
       <table class="rank-table">
-        <thead>
-          <tr><th>판매처</th><th>실결제 매출</th><th>공헌이익</th><th>할인율</th></tr>
-        </thead>
+        <thead><tr><th>판매처</th><th>실결제 매출</th><th>원가</th><th>수수료</th><th>공헌이익</th></tr></thead>
         <tbody id="rankTableBody"></tbody>
       </table>
     </div>
-
     <div class="card">
-      <div class="card-header"><div class="card-title">지역별 매출 순위 (실결제 기준)</div></div>
+      <div class="card-header">
+        <div class="card-title">지역별 매출 순위</div>
+        <div style="font-size:11px;color:#aaa">클릭하면 상세 주소 확인</div>
+      </div>
       <ul class="region-list" id="regionList"></ul>
-      <div id="regionSummary" style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;font-size:12px;color:#aaa"></div>
+      <div id="regionSummary" style="margin-top:12px;padding-top:10px;border-top:1px solid #f0f0f0;font-size:12px;color:#aaa"></div>
     </div>
   </div>
 
-  <!-- Discount chart -->
   <div class="card" style="margin-bottom:1.5rem">
     <div class="card-header"><div class="card-title">판매처별 할인율 비교</div></div>
-    <div class="chart-wrap" style="height:160px">
+    <div class="chart-wrap" style="height:150px">
       <canvas id="discountChart" role="img" aria-label="판매처별 할인율 바 차트"></canvas>
     </div>
   </div>
 
-  <!-- Insights -->
   <div class="insight-grid">
     <div class="insight-card blue">
       <div class="insight-title">채널 효율</div>
@@ -214,62 +232,92 @@
 
 <footer>LLS Sales Dashboard · 데이터 기준일 2026.06.29</footer>
 
+<!-- 지역 드릴다운 모달 -->
+<div class="modal-overlay" id="regionModal" onclick="closeModal(event)">
+  <div class="modal-panel" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeRegionModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <script>
-const PRICES = {
-  LLS_C_BK01:98000, LLS_C_OR01:98000, LLS_C_GR01:98000, LLS_C_BL01:98000,
-  LLS_3_BK01:79000, LLS_3_OR01:79000, LLS_3_GR01:79000, LLS_3_BL01:79000,
-  LLS_3_BK_3M:82000,
-  LLS_ctoc_BK:17900, LLS_ctoc_OR:17900, LLS_ctoc_GR:17900, LLS_ctoc_BL:17900
-};
-const FEES = { '29CM':0.25, '공식몰':0.035, '보블릭':0.23, '퓨처테리어':0.15 };
+const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900 };
+const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290 };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15 };
 const CH_COLORS = { '공식몰':'#185FA5','29CM':'#1D9E75','보블릭':'#D85A30','퓨처테리어':'#888780' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
-  {ch:'29CM',code:'LLS_3_GR01',paid:79000,qty:1,addr:'서울 관악구',date:'2026-06-28'},
-  {ch:'29CM',code:'LLS_3_BK01',paid:79000,qty:1,addr:'서울 노원구',date:'2026-06-29'},
-  {ch:'29CM',code:'LLS_3_BK01',paid:79000,qty:1,addr:'서울 관악구',date:'2026-06-28'},
-  {ch:'29CM',code:'LLS_3_BK01',paid:237000,qty:3,addr:'서울 송파구',date:'2026-06-28'},
-  {ch:'29CM',code:'LLS_3_BK_3M',paid:82000,qty:1,addr:'인천광역시 서구',date:'2026-06-26'},
-  {ch:'29CM',code:'LLS_C_OR01',paid:98000,qty:1,addr:'경북 영주시',date:'2026-06-28'},
-  {ch:'29CM',code:'LLS_ctoc_OR',paid:17900,qty:1,addr:'경북 영주시',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_3_BK_3M',paid:77900,qty:1,addr:'경기 성남시',date:'2026-06-29'},
-  {ch:'공식몰',code:'LLS_3_BK_3M',paid:77900,qty:1,addr:'경기 시흥시',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_3_BK_3M',paid:82000,qty:1,addr:'서울 영등포구',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_3_BK_3M',paid:77900,qty:1,addr:'서울 용산구',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_3_GR01',paid:79000,qty:1,addr:'서울 강남구',date:'2026-06-27'},
-  {ch:'공식몰',code:'LLS_3_BK01',paid:158000,qty:2,addr:'서울 강남구',date:'2026-06-27'},
-  {ch:'공식몰',code:'LLS_C_GR01',paid:98000,qty:1,addr:'서울 강남구',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_C_BK01',paid:98000,qty:1,addr:'서울 구로구',date:'2026-06-28'},
-  {ch:'공식몰',code:'LLS_C_BK01',paid:98000,qty:1,addr:'서울 송파구',date:'2026-06-27'},
-  {ch:'공식몰',code:'LLS_C_BK01',paid:99094,qty:1,addr:'서울 송파구',date:'2026-06-28'},
-  {ch:'보블릭',code:'LLS_C_BK01',paid:98000,qty:1,addr:'서울 강남구',date:'2026-06-26'},
-  {ch:'보블릭',code:'LLS_C_BK01',paid:98000,qty:1,addr:'서울 서초구',date:'2026-06-26'},
-  {ch:'보블릭',code:'LLS_C_GR01',paid:98000,qty:1,addr:'서울 서초구',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_C_BK01',paid:93100,qty:1,addr:'경기 화성시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,qty:1,addr:'경남 거제시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:19800,qty:2,addr:'서울 양천구',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,qty:1,addr:'서울 영등포구',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,qty:1,addr:'세종특별자치시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_BL',paid:9900,qty:1,addr:'서울 도봉구',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_BL',paid:9900,qty:1,addr:'경남 거제시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,qty:1,addr:'강원특별자치도 강릉시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,qty:1,addr:'전남 순천시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,qty:1,addr:'경기 화성시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,qty:1,addr:'전남 순천시',date:'2026-06-26'},
-  {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,qty:1,addr:'서울 영등포구',date:'2026-06-26'},
+  {ch:'29CM',   code:'LLS_3_GR01',  paid:79000,  qty:1, date:'2026-06-28', addr:'서울 관악구 쑥고개로21길 31 휴스테이 803호'},
+  {ch:'29CM',   code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-29', addr:'서울 노원구 공릉로46가길 17 402호'},
+  {ch:'29CM',   code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-28', addr:'서울 관악구 남부순환로 1925 8층'},
+  {ch:'29CM',   code:'LLS_3_BK01',  paid:237000, qty:3, date:'2026-06-28', addr:'서울 송파구 잠실동 86 아시아선수촌아파트 15동 1601호'},
+  {ch:'29CM',   code:'LLS_3_BK_3M', paid:82000,  qty:1, date:'2026-06-26', addr:'인천광역시 서구 검단로623번길 56-1 서해벨리 4동 301호'},
+  {ch:'29CM',   code:'LLS_C_OR01',  paid:98000,  qty:1, date:'2026-06-28', addr:'경북 영주시 남간로71번길 41 104-403'},
+  {ch:'29CM',   code:'LLS_ctoc_OR', paid:17900,  qty:1, date:'2026-06-28', addr:'경북 영주시 남간로71번길 41 104-403'},
+  {ch:'공식몰', code:'LLS_3_BK_3M', paid:77900,  qty:1, date:'2026-06-29', addr:'경기 성남시 분당구 서현로 241 (서현동) 202호'},
+  {ch:'공식몰', code:'LLS_3_BK_3M', paid:77900,  qty:1, date:'2026-06-28', addr:'경기 시흥시 월곶중앙로 90 (월곶동, 풍림1차아파트) 103동 604호'},
+  {ch:'공식몰', code:'LLS_3_BK_3M', paid:82000,  qty:1, date:'2026-06-28', addr:'서울특별시 영등포구 국제금융로 39 (여의도동, 브라이튼여의도) 102동 2201호'},
+  {ch:'공식몰', code:'LLS_3_BK_3M', paid:77900,  qty:1, date:'2026-06-28', addr:'서울 용산구 효창원로48길 4 (용문동) 3층 우측집'},
+  {ch:'공식몰', code:'LLS_3_GR01',  paid:79000,  qty:1, date:'2026-06-27', addr:'서울특별시 강남구 개포로110길 50 (일원동, 래미안개포루체하임) 105동 2101호'},
+  {ch:'공식몰', code:'LLS_3_BK01',  paid:158000, qty:2, date:'2026-06-27', addr:'서울특별시 강남구 개포로110길 50 (일원동, 래미안개포루체하임) 105동 2101호'},
+  {ch:'공식몰', code:'LLS_C_GR01',  paid:98000,  qty:1, date:'2026-06-28', addr:'서울특별시 강남구 봉은사로67길 18 (삼성동, 삼성동중앙하이츠빌리지) 203호'},
+  {ch:'공식몰', code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-28', addr:'서울특별시 구로구 경인로 662 (신도림동, 디큐브시티) B동 3615호'},
+  {ch:'공식몰', code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-27', addr:'서울특별시 송파구 위례광장로 136 (장지동, 위례아이파크) 101동 703호'},
+  {ch:'공식몰', code:'LLS_C_BK01',  paid:99094,  qty:1, date:'2026-06-28', addr:'서울 송파구 송파대로 345 (가락동, 헬리오시티) 205동 1104호'},
+  {ch:'보블릭', code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-26', addr:'서울특별시 강남구 학동로68길 30 (삼성동, 삼성동중앙하이츠빌리지) 103동 603호'},
+  {ch:'보블릭', code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-26', addr:'서울특별시 서초구 잠원로14길 3 (잠원동, 롯데캐슬갤럭시) 104동 902호'},
+  {ch:'보블릭', code:'LLS_C_GR01',  paid:98000,  qty:1, date:'2026-06-26', addr:'서울특별시 서초구 잠원로14길 3 (잠원동, 롯데캐슬갤럭시) 104동 902호'},
+  {ch:'퓨처테리어',code:'LLS_C_BK01', paid:93100, qty:1, date:'2026-06-26', addr:'경기 화성시 동탄구 동탄대로24길 117 (동탄파크자이) 337동 1503호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,  qty:1, date:'2026-06-26', addr:'경남 거제시 양정5길 36 거제아이파크1차 110동 2403호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:19800, qty:2, date:'2026-06-26', addr:'서울 양천구 신정로 293 (신정동, 신트리1단지아파트) 108동 1102호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,  qty:1, date:'2026-06-26', addr:'서울 영등포구 문래로 82 (문래동, 문래힐스테이트) 110동 1002호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,  qty:1, date:'2026-06-26', addr:'세종특별자치시 한누리대로 2154 세종시교육청 1층 민원실'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BL',paid:9900,  qty:1, date:'2026-06-26', addr:'서울 도봉구 도당로13다길 15-5 101호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BL',paid:9900,  qty:1, date:'2026-06-26', addr:'경남 거제시 양정5길 36 거제아이파크1차 110동 2403호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,  qty:1, date:'2026-06-26', addr:'강원특별자치도 강릉시 원대로128번길 14 (현대하이빌) 102동 802호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,  qty:1, date:'2026-06-26', addr:'전남 순천시 연향1로 55 (연향동, 부영1차아파트) 106동 1205호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,  qty:1, date:'2026-06-26', addr:'경기 화성시 동탄구 동탄대로24길 117 (동탄파크자이) 337동 1503호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,  qty:1, date:'2026-06-26', addr:'전남 순천시 연향1로 55 (연향동, 부영1차아파트) 106동 1205호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,  qty:1, date:'2026-06-26', addr:'서울 영등포구 문래로 82 (문래동, 문래힐스테이트) 110동 1002호'},
 ];
 
 function normalizeRegion(addr) {
-  if (addr.startsWith('서울')) return '서울';
-  if (addr.startsWith('경기')) return '경기';
-  if (addr.startsWith('인천')) return '인천';
-  if (addr.startsWith('경북') || addr.startsWith('경상북도')) return '경북';
-  if (addr.startsWith('경남') || addr.startsWith('경상남도')) return '경남';
-  if (addr.startsWith('강원')) return '강원';
-  if (addr.startsWith('전남') || addr.startsWith('전라남도')) return '전남';
-  if (addr.startsWith('세종')) return '세종';
+  if (/^서울/.test(addr)) return '서울';
+  if (/^경기/.test(addr)) return '경기';
+  if (/^인천/.test(addr)) return '인천';
+  if (/^경북|^경상북도/.test(addr)) return '경북';
+  if (/^경남|^경상남도/.test(addr)) return '경남';
+  if (/^강원/.test(addr)) return '강원';
+  if (/^전남|^전라남도/.test(addr)) return '전남';
+  if (/^세종/.test(addr)) return '세종';
   return addr.split(' ')[0];
+}
+
+function extractGu(addr) {
+  const m = addr.match(/([가-힣]+[구군시])\s/);
+  return m ? m[1] : '기타';
+}
+
+function extractBuilding(addr) {
+  // (동명, 건물명) 패턴
+  const p = addr.match(/\([^,)]+,\s*([^)]+)\)/);
+  if (p) return p[1].trim();
+  // 아파트명 키워드
+  const kw = addr.match(/([가-힣A-Za-z0-9가-힣]*(?:아파트|힐스테이트|자이|아이파크|캐슬|파크자이|하이빌|헬리오시티|빌리지|루체하임|갤럭시|시티|신트리|브라이튼|벨리|하이츠)[가-힣0-9]*)/);
+  if (kw) return kw[1];
+  return null;
+}
+
+function extractDongHo(addr) {
+  const m = addr.match(/(\d+동\s*\d+호|\d+[A-Z]?동\s*\d+호|[A-Z]+동\s*\d+호|\d+-\d+호|\d+호)/);
+  return m ? m[0] : '';
 }
 
 let selectedDate = 'all';
@@ -281,14 +329,11 @@ function buildDateTabs() {
   const container = document.getElementById('dateTabs');
   let html = `<button class="date-tab all-tab active" data-date="all" onclick="selectDate('all')">전체</button>`;
   dates.forEach(d => {
-    const dt = new Date(d);
-    const dayIdx = dt.getDay();
-    const dayName = DAYS[dayIdx];
-    const dayNum = dt.getDate();
-    let cls = dayIdx === 0 ? 'sun' : dayIdx === 6 ? 'sat' : '';
+    const dt = new Date(d + 'T00:00:00');
+    const di = dt.getDay();
+    const cls = di === 0 ? 'sun' : di === 6 ? 'sat' : '';
     html += `<button class="date-tab ${cls}" data-date="${d}" onclick="selectDate('${d}')">
-      <span class="day-num">${dayNum}</span>
-      <span class="day-name">${dayName}</span>
+      <span class="dn">${dt.getDate()}</span><span class="dw">${DAYS[di]}</span>
     </button>`;
   });
   container.innerHTML = html;
@@ -296,207 +341,152 @@ function buildDateTabs() {
 
 function selectDate(date) {
   selectedDate = date;
-  document.querySelectorAll('.date-tab').forEach(el => {
-    el.classList.toggle('active', el.dataset.date === date);
-  });
+  document.querySelectorAll('.date-tab').forEach(el => el.classList.toggle('active', el.dataset.date === date));
   updateAll();
 }
 
-function getFilteredOrders() {
-  if (selectedDate === 'all') return ORDERS;
-  return ORDERS.filter(o => o.date === selectedDate);
+function getFiltered() {
+  return selectedDate === 'all' ? ORDERS : ORDERS.filter(o => o.date === selectedDate);
 }
 
 function fmt(n) { return Math.round(n).toLocaleString('ko-KR'); }
 
 function compute(orders) {
-  const channels = {};
-  const regions = {};
-  let totalList = 0, totalPaid = 0, totalFee = 0;
-
+  const ch = {}, reg = {};
+  let tList=0, tPaid=0, tFee=0, tCost=0;
   orders.forEach(o => {
-    const listPrice = (PRICES[o.code] || o.paid / o.qty) * o.qty;
-    const paid = o.paid;
-    const fee = paid * (FEES[o.ch] || 0);
-    totalList += listPrice;
-    totalPaid += paid;
-    totalFee += fee;
-    if (!channels[o.ch]) channels[o.ch] = { listRev:0, paidRev:0, fee:0 };
-    channels[o.ch].listRev += listPrice;
-    channels[o.ch].paidRev += paid;
-    channels[o.ch].fee += fee;
-    const reg = normalizeRegion(o.addr);
-    regions[reg] = (regions[reg] || 0) + paid;
+    const list = (PRICES[o.code] || o.paid/o.qty) * o.qty;
+    const cost = (COSTS[o.code] || 0) * o.qty;
+    const fee  = o.paid * (FEES[o.ch] || 0);
+    tList += list; tPaid += o.paid; tFee += fee; tCost += cost;
+    if (!ch[o.ch]) ch[o.ch] = {listRev:0,paidRev:0,fee:0,cost:0};
+    ch[o.ch].listRev += list; ch[o.ch].paidRev += o.paid; ch[o.ch].fee += fee; ch[o.ch].cost += cost;
+    const r = normalizeRegion(o.addr);
+    reg[r] = (reg[r] || 0) + o.paid;
   });
-
-  return { channels, regions, totalList, totalPaid, totalFee, totalContrib: totalPaid - totalFee };
+  return { ch, reg, tList, tPaid, tFee, tCost, tContrib: tPaid - tFee };
 }
 
-function updateKPIs(data) {
-  const { totalList, totalPaid, totalFee, totalContrib } = data;
-  const discount = totalList > 0 ? ((totalList - totalPaid) / totalList * 100).toFixed(1) : '0.0';
-  const feeRatio = totalPaid > 0 ? (totalFee / totalPaid * 100).toFixed(1) : '0.0';
-  const contribRate = totalPaid > 0 ? (totalContrib / totalPaid * 100).toFixed(1) : '0.0';
-  const cnt = getFilteredOrders().length;
+function updateKPIs(d) {
+  const disc = d.tList > 0 ? ((d.tList-d.tPaid)/d.tList*100).toFixed(1) : '0.0';
+  const cr   = d.tPaid > 0 ? (d.tContrib/d.tPaid*100).toFixed(1) : '0.0';
+  const costr= d.tPaid > 0 ? (d.tCost/d.tPaid*100).toFixed(1) : '0.0';
+  const fr   = d.tPaid > 0 ? (d.tFee/d.tPaid*100).toFixed(1) : '0.0';
+  const cnt  = getFiltered().length;
 
-  document.getElementById('kpi1').innerHTML = fmt(totalList) + '<span>원</span>';
+  document.getElementById('kpi1').innerHTML = fmt(d.tList)+'<span>원</span>';
   document.getElementById('kpi1s').textContent = `총 ${cnt}건 · 4개 채널`;
-  document.getElementById('kpi2').innerHTML = fmt(totalPaid) + '<span>원</span>';
-  document.getElementById('kpi2s').innerHTML = `할인율 평균 <span class="down">${discount}%</span>`;
-  document.getElementById('kpi3').innerHTML = fmt(totalFee) + '<span>원</span>';
-  document.getElementById('kpi3s').innerHTML = `실결제 대비 <span class="down">${feeRatio}%</span>`;
-  document.getElementById('kpi4').innerHTML = fmt(totalContrib) + '<span>원</span>';
-  document.getElementById('kpi4s').innerHTML = `공헌이익률 <span class="up">${contribRate}%</span>`;
+  document.getElementById('kpi2').innerHTML = fmt(d.tPaid)+'<span>원</span>';
+  document.getElementById('kpi2s').innerHTML = `할인율 평균 <span class="down">${disc}%</span>`;
+  document.getElementById('kpi3').innerHTML = fmt(d.tCost)+'<span>원</span>';
+  document.getElementById('kpi3s').innerHTML = `실결제 대비 <span class="down">${costr}%</span>`;
+  document.getElementById('kpi4').innerHTML = fmt(d.tFee)+'<span>원</span>';
+  document.getElementById('kpi4s').innerHTML = `실결제 대비 <span class="down">${fr}%</span>`;
+  document.getElementById('kpi5').innerHTML = fmt(d.tContrib)+'<span>원</span>';
+  document.getElementById('kpi5s').innerHTML = `공헌이익률 <span class="up">${cr}%</span>`;
 
   if (selectedDate === 'all') {
     document.getElementById('headerDate').textContent = '2026.06 전체';
   } else {
-    const dt = new Date(selectedDate);
-    const day = DAYS[dt.getDay()];
-    document.getElementById('headerDate').textContent = `2026.06.${String(dt.getDate()).padStart(2,'0')} (${day})`;
+    const dt = new Date(selectedDate+'T00:00:00');
+    document.getElementById('headerDate').textContent = `2026.06.${String(dt.getDate()).padStart(2,'0')} (${DAYS[dt.getDay()]})`;
   }
 }
 
-function updateDonut(data) {
-  const { channels, totalPaid } = data;
-  const chList = ['공식몰','29CM','보블릭','퓨처테리어'];
-  const vals = chList.map(c => Math.round(channels[c]?.paidRev || 0));
-  const colors = chList.map(c => CH_COLORS[c]);
-
+function updateDonut(d) {
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어'];
+  const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
-    type: 'doughnut',
-    data: { labels: chList, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 3, borderColor: '#ffffff' }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '68%',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString() + '원' } } }
-    }
+    type:'doughnut',
+    data:{ labels:chs, datasets:[{ data:vals, backgroundColor:chs.map(c=>CH_COLORS[c]), borderWidth:3, borderColor:'#fff' }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'68%',
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed.toLocaleString()+'원'}} } }
   });
-
-  const legendEl = document.getElementById('donutLegend');
-  legendEl.innerHTML = chList.map(c => {
-    const pct = totalPaid > 0 ? ((channels[c]?.paidRev || 0) / totalPaid * 100).toFixed(1) : '0.0';
-    return `<span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:${CH_COLORS[c]};display:inline-block"></span>${c} ${pct}%</span>`;
+  document.getElementById('donutLegend').innerHTML = chs.map(c => {
+    const pct = d.tPaid > 0 ? ((d.ch[c]?.paidRev||0)/d.tPaid*100).toFixed(1) : '0.0';
+    return `<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${CH_COLORS[c]};display:inline-block"></span>${c} ${pct}%</span>`;
   }).join('');
 }
 
-function updateStackBar(data) {
-  const { channels } = data;
-  const chList = ['공식몰','29CM','보블릭','퓨처테리어'];
-  const contribs = chList.map(c => Math.round((channels[c]?.paidRev || 0) - (channels[c]?.fee || 0)));
-  const fees = chList.map(c => Math.round(channels[c]?.fee || 0));
-
+function updateStackBar(d) {
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어'];
+  const contribs = chs.map(c => Math.round((d.ch[c]?.paidRev||0)-(d.ch[c]?.fee||0)));
+  const fees     = chs.map(c => Math.round(d.ch[c]?.fee||0));
   let datasets;
-  if (profitMode === 'all') {
-    datasets = [
-      { label:'공헌이익', data: contribs, backgroundColor: '#1D9E75', borderRadius: 4 },
-      { label:'수수료',   data: fees,     backgroundColor: '#f09595', borderRadius: 4 }
-    ];
-  } else if (profitMode === 'contrib') {
-    datasets = [{ label:'공헌이익', data: contribs, backgroundColor: '#1D9E75', borderRadius: 4 }];
-  } else {
-    datasets = [{ label:'수수료', data: fees, backgroundColor: '#f09595', borderRadius: 4 }];
-  }
-
-  const stacked = profitMode === 'all';
+  if (profitMode==='all')    datasets=[{label:'공헌이익',data:contribs,backgroundColor:'#1D9E75',borderRadius:4},{label:'수수료',data:fees,backgroundColor:'#f09595',borderRadius:4}];
+  else if (profitMode==='contrib') datasets=[{label:'공헌이익',data:contribs,backgroundColor:'#1D9E75',borderRadius:4}];
+  else datasets=[{label:'수수료',data:fees,backgroundColor:'#f09595',borderRadius:4}];
+  const stacked = profitMode==='all';
   if (stackBarChart) stackBarChart.destroy();
   stackBarChart = new Chart(document.getElementById('stackBar'), {
-    type: 'bar',
-    data: { labels: chList, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { stacked, ticks: { font: { size: 11 } }, grid: { display: false } },
-        y: { stacked, ticks: { font: { size: 11 }, callback: v => (v/10000).toFixed(0) + '만' }, grid: { color: '#f4f4f4' } }
-      }
-    }
+    type:'bar', data:{labels:chs,datasets},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{stacked,ticks:{font:{size:11}},grid:{display:false}}, y:{stacked,ticks:{font:{size:11},callback:v=>(v/10000).toFixed(0)+'만'},grid:{color:'#f4f4f4'}} } }
   });
 }
 
-function updateRankTable(data) {
-  const { channels } = data;
-  const chList = Object.entries(channels).sort((a,b) => b[1].paidRev - a[1].paidRev);
-  const badges = [
-    {bg:'#dbeafe',color:'#185FA5'},
-    {bg:'#dcfce7',color:'#1D9E75'},
-    {bg:'#fce8e0',color:'#D85A30'},
-    {bg:'#f3f3f3',color:'#666'}
-  ];
-  const tbody = document.getElementById('rankTableBody');
-  tbody.innerHTML = chList.map(([ch, d], i) => {
-    const badge = badges[i] || badges[3];
-    const feeRate = (FEES[ch] * 100) + '%';
-    const discount = d.listRev > 0 ? ((d.listRev - d.paidRev) / d.listRev * 100).toFixed(1) : '0.0';
-    const barW = Math.min(100, parseFloat(discount) * 3);
-    const barColor = parseFloat(discount) > 10 ? '#E24B4A' : CH_COLORS[ch];
+function updateRankTable(d) {
+  const sorted = Object.entries(d.ch).sort((a,b)=>b[1].paidRev-a[1].paidRev);
+  const badges = [{bg:'#dbeafe',c:'#185FA5'},{bg:'#dcfce7',c:'#1D9E75'},{bg:'#fce8e0',c:'#D85A30'},{bg:'#f3f3f3',c:'#666'}];
+  document.getElementById('rankTableBody').innerHTML = sorted.map(([ch,v],i) => {
+    const b = badges[i]||badges[3];
+    const disc = v.listRev > 0 ? ((v.listRev-v.paidRev)/v.listRev*100).toFixed(1) : '0.0';
+    const contrib = v.paidRev - v.fee;
     return `<tr>
-      <td><span class="rank-badge" style="background:${badge.bg};color:${badge.color}">${i+1}</span><span class="ch-name">${ch}</span><br>
-        <span style="margin-left:30px" class="ch-sub">수수료 ${feeRate}</span></td>
-      <td><div class="num-main">${fmt(d.paidRev)}원</div><div class="num-sub">판매가 ${fmt(d.listRev)}원</div></td>
-      <td><div class="num-main" style="color:#1D9E75">${fmt(d.paidRev - d.fee)}원</div><div class="num-sub">수수료 ${fmt(d.fee)}원</div></td>
-      <td><div class="num-main" style="color:${parseFloat(discount) > 10 ? '#E24B4A' : '#1a1a2e'}">${discount}%</div>
-        <div class="discount-bar-wrap"><div class="discount-bar" style="width:${barW}%;background:${barColor}"></div></div></td>
+      <td><span class="rank-badge" style="background:${b.bg};color:${b.c}">${i+1}</span><span class="ch-name">${ch}</span><br>
+        <span style="margin-left:26px" class="ch-sub">수수료 ${(FEES[ch]*100)}%</span></td>
+      <td><div class="nm">${fmt(v.paidRev)}원</div><div class="ns">판매가 ${fmt(v.listRev)}원</div></td>
+      <td><div class="nm" style="color:#BA7517">${fmt(v.cost)}원</div><div class="ns">원가율 ${v.paidRev>0?(v.cost/v.paidRev*100).toFixed(1):'0'}%</div></td>
+      <td><div class="nm" style="color:#c0392b">${fmt(v.fee)}원</div></td>
+      <td><div class="nm" style="color:#1D9E75">${fmt(contrib)}원</div><div class="ns">이익률 ${v.paidRev>0?(contrib/v.paidRev*100).toFixed(1):'0'}%</div></td>
     </tr>`;
   }).join('');
 }
 
-function updateRegion(data) {
-  const { regions, totalPaid } = data;
-  const sorted = Object.entries(regions).sort((a,b) => b[1]-a[1]);
-  const max = sorted[0]?.[1] || 1;
-  const list = document.getElementById('regionList');
-  list.innerHTML = sorted.map(([reg, amt], i) => {
-    const w = (amt / max * 100).toFixed(1);
+function updateRegion(d) {
+  const sorted = Object.entries(d.reg).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0]?.[1]||1;
+  document.getElementById('regionList').innerHTML = sorted.map(([reg,amt],i) => {
+    const w = (amt/max*100).toFixed(1);
     const cls = i < 3 ? 'top' : '';
-    return `<li class="region-item">
-      <span class="region-rank ${cls}">${i+1}</span>
-      <span class="region-name">${reg}</span>
-      <div class="region-bar-wrap"><div class="region-bar" style="width:${w}%"></div></div>
-      <span class="region-amount">${fmt(amt)}원</span>
+    return `<li class="region-item" onclick="openRegionModal('${reg}')">
+      <span class="rrank ${cls}">${i+1}</span>
+      <span class="rname">${reg}</span>
+      <div class="rbar-wrap"><div class="rbar" style="width:${w}%"></div></div>
+      <span class="ramt">${fmt(amt)}원</span>
+      <span class="rdetail-icon">›</span>
     </li>`;
   }).join('');
 
-  const seoul = regions['서울'] || 0;
-  const gyeonggi = regions['경기'] || 0;
-  const incheon = regions['인천'] || 0;
-  const metro = seoul + gyeonggi + incheon;
-  const seoulPct = totalPaid > 0 ? (seoul/totalPaid*100).toFixed(1) : '0.0';
-  const metroPct = totalPaid > 0 ? (metro/totalPaid*100).toFixed(1) : '0.0';
-  document.getElementById('regionSummary').innerHTML =
-    `서울 집중도 <strong style="color:#185FA5">${seoulPct}%</strong> · 수도권(서울+경기+인천) <strong style="color:#185FA5">${metroPct}%</strong>`;
+  const seoul = d.reg['서울']||0;
+  const gyeonggi = d.reg['경기']||0;
+  const incheon = d.reg['인천']||0;
+  const metro = seoul+gyeonggi+incheon;
+  const sp = d.tPaid>0?(seoul/d.tPaid*100).toFixed(1):'0';
+  const mp = d.tPaid>0?(metro/d.tPaid*100).toFixed(1):'0';
+  document.getElementById('regionSummary').innerHTML = `서울 집중도 <strong style="color:#185FA5">${sp}%</strong> · 수도권(서울+경기+인천) <strong style="color:#185FA5">${mp}%</strong>`;
 }
 
-function updateDiscount(data) {
-  const { channels } = data;
-  const chList = ['29CM','공식몰','보블릭','퓨처테리어'];
-  const discounts = chList.map(c => {
-    const d = channels[c];
-    if (!d || d.listRev === 0) return 0;
-    return parseFloat(((d.listRev - d.paidRev) / d.listRev * 100).toFixed(1));
+function updateDiscount(d) {
+  const chs = ['29CM','공식몰','보블릭','퓨처테리어'];
+  const discs = chs.map(c => {
+    const v = d.ch[c];
+    if (!v||v.listRev===0) return 0;
+    return parseFloat(((v.listRev-v.paidRev)/v.listRev*100).toFixed(1));
   });
-
   if (discountChartObj) discountChartObj.destroy();
   discountChartObj = new Chart(document.getElementById('discountChart'), {
-    type: 'bar',
-    data: {
-      labels: chList,
-      datasets: [{ data: discounts, backgroundColor: chList.map(c => CH_COLORS[c]), borderRadius: 6, barThickness: 40 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' 할인율: ' + ctx.parsed.y + '%' } } },
-      scales: {
-        x: { ticks: { font: { size: 12 } }, grid: { display: false } },
-        y: { ticks: { font: { size: 11 }, callback: v => v + '%' }, grid: { color: '#f4f4f4' }, min: 0, max: 40 }
-      }
-    }
+    type:'bar',
+    data:{ labels:chs, datasets:[{data:discs, backgroundColor:chs.map(c=>CH_COLORS[c]), borderRadius:6, barThickness:40}] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' 할인율: '+ctx.parsed.y+'%'}}},
+      scales:{ x:{ticks:{font:{size:12}},grid:{display:false}}, y:{ticks:{font:{size:11},callback:v=>v+'%'},grid:{color:'#f4f4f4'},min:0,max:40} } }
   });
 }
 
 function updateAll() {
-  const orders = getFilteredOrders();
-  const data = compute(orders);
+  const data = compute(getFiltered());
   updateKPIs(data);
   updateDonut(data);
   updateStackBar(data);
@@ -507,12 +497,69 @@ function updateAll() {
 
 function setProfitMode(mode) {
   profitMode = mode;
-  document.getElementById('btnAll').classList.toggle('active', mode === 'all');
-  document.getElementById('btnContrib').classList.toggle('active', mode === 'contrib');
-  document.getElementById('btnFee').classList.toggle('active', mode === 'fee');
-  const orders = getFilteredOrders();
-  updateStackBar(compute(orders));
+  document.getElementById('btnAll').classList.toggle('active', mode==='all');
+  document.getElementById('btnContrib').classList.toggle('active', mode==='contrib');
+  document.getElementById('btnFee').classList.toggle('active', mode==='fee');
+  updateStackBar(compute(getFiltered()));
 }
+
+function openRegionModal(region) {
+  const orders = getFiltered().filter(o => normalizeRegion(o.addr) === region);
+  const total = orders.reduce((s,o)=>s+o.paid,0);
+
+  document.getElementById('modalTitle').textContent = region + ' 지역 주문 상세';
+  document.getElementById('modalSubtitle').textContent = `총 ${orders.length}건 · ${fmt(total)}원`;
+
+  // 구별 그루핑
+  const guMap = {};
+  orders.forEach(o => {
+    const gu = extractGu(o.addr);
+    if (!guMap[gu]) guMap[gu] = [];
+    guMap[gu].push(o);
+  });
+
+  const sorted = Object.entries(guMap).sort((a,b) =>
+    b[1].reduce((s,o)=>s+o.paid,0) - a[1].reduce((s,o)=>s+o.paid,0)
+  );
+
+  let html = '';
+  sorted.forEach(([gu, guOrders]) => {
+    const guTotal = guOrders.reduce((s,o)=>s+o.paid,0);
+    html += `<div class="gu-section">
+      <div class="gu-header"><span>📍 ${gu}</span><span>${fmt(guTotal)}원 · ${guOrders.length}건</span></div>`;
+
+    // 건물별 그루핑
+    const bldMap = {};
+    guOrders.forEach(o => {
+      const bld = extractBuilding(o.addr) || extractDongHo(o.addr) || '단독/기타';
+      if (!bldMap[bld]) bldMap[bld] = [];
+      bldMap[bld].push(o);
+    });
+
+    Object.entries(bldMap).forEach(([bld, bOrders]) => {
+      const bTotal = bOrders.reduce((s,o)=>s+o.paid,0);
+      const dongho = extractDongHo(bOrders[0].addr);
+      // 상세 주소에서 아파트명 이후 동/호 부분
+      const detailAddr = bOrders[0].addr.replace(/^서울특별시\s*|^서울\s*/,'');
+      html += `<div class="order-row">
+        <div class="order-building">🏢 ${bld}${dongho ? ' · ' + dongho : ''}</div>
+        <div class="order-detail" title="${bOrders[0].addr}">${detailAddr}</div>
+        <div class="order-tags">`;
+      bOrders.forEach(o => {
+        const codeName = o.code.replace('LLS_','').replace('ctoc_','케이블 ').replace('3_BK_3M','멀티탭 3구 3M').replace('3_BK01','멀티탭 3구 BK').replace('3_GR01','멀티탭 3구 GR').replace('3_OR01','멀티탭 3구 OR').replace('3_BL01','멀티탭 3구 BL').replace('C_BK01','USB-C BK').replace('C_GR01','USB-C GR').replace('C_OR01','USB-C OR').replace('C_BL01','USB-C BL');
+        html += `<span class="tag tag-ch">${o.ch}</span><span class="tag tag-code">${codeName}</span><span class="tag tag-amt">${fmt(o.paid)}원 × ${o.qty}</span>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  });
+
+  document.getElementById('modalBody').innerHTML = html || '<p style="color:#aaa;font-size:13px;padding:1rem 0">해당 지역 주문 없음</p>';
+  document.getElementById('regionModal').classList.add('open');
+}
+
+function closeRegionModal() { document.getElementById('regionModal').classList.remove('open'); }
+function closeModal(e) { if (e.target === document.getElementById('regionModal')) closeRegionModal(); }
 
 buildDateTabs();
 updateAll();
