@@ -175,6 +175,44 @@
     .tag-code { background:var(--amber-light); color:#B45309; }
 
     footer { text-align:center; font-size:11px; color:var(--text-sub); padding:2rem; }
+
+    /* ── Reviews ── */
+    .review-section-title { font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:10px; }
+    .review-section-sub { font-size:13px; color:var(--text-sub); margin-bottom:1.25rem; }
+    .review-ch-tabs { display:flex; gap:8px; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .review-ch-tab { padding:7px 18px; border-radius:20px; font-size:12px; font-weight:600; border:none; cursor:pointer; background:var(--card); color:var(--text-sub); box-shadow:var(--shadow-sm); transition:all 0.15s; }
+    .review-ch-tab.active { background:var(--primary); color:#fff; box-shadow:0 4px 12px rgba(79,110,247,0.3); }
+    .review-summary { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:1.5rem; }
+    .rv-kpi { background:var(--card); border-radius:var(--radius-sm); padding:1.1rem 1.25rem; box-shadow:var(--shadow-sm); text-align:center; }
+    .rv-kpi-val { font-size:22px; font-weight:800; color:var(--text); line-height:1; }
+    .rv-kpi-lbl { font-size:11px; color:var(--text-sub); margin-top:5px; font-weight:500; }
+    .sentiment-bar-wrap { background:var(--card); border-radius:var(--radius); padding:1.5rem; box-shadow:var(--shadow-sm); margin-bottom:1.5rem; }
+    .sentiment-bar-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:1rem; }
+    .sbar-track { height:14px; border-radius:7px; overflow:hidden; display:flex; margin-bottom:10px; }
+    .sbar-pos { background:#22C55E; height:100%; transition:width 0.5s; }
+    .sbar-neu { background:#F59E0B; height:100%; transition:width 0.5s; }
+    .sbar-neg { background:#EF4444; height:100%; transition:width 0.5s; }
+    .sbar-legend { display:flex; gap:18px; font-size:12px; }
+    .sbar-legend-item { display:flex; align-items:center; gap:6px; }
+    .sbar-legend-dot { width:9px; height:9px; border-radius:3px; flex-shrink:0; }
+    .review-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .review-card { background:var(--card); border-radius:var(--radius); padding:1.5rem; box-shadow:var(--shadow-sm); border:1.5px solid var(--border); position:relative; overflow:hidden; }
+    .review-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+    .review-card.positive::before { background:linear-gradient(90deg,#22C55E,#4ADE80); }
+    .review-card.neutral::before { background:linear-gradient(90deg,#F59E0B,#FCD34D); }
+    .review-card.negative::before { background:linear-gradient(90deg,#EF4444,#FCA5A5); }
+    .rv-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+    .rv-stars { font-size:15px; letter-spacing:1px; }
+    .rv-badge { font-size:10px; font-weight:700; padding:3px 10px; border-radius:6px; flex-shrink:0; }
+    .rv-badge.pos { background:#EDFAF4; color:#16A34A; }
+    .rv-badge.neu { background:#FEF7EC; color:#B45309; }
+    .rv-badge.neg { background:#FFF3F3; color:#DC2626; }
+    .rv-product { font-size:11px; font-weight:600; color:var(--primary); margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .rv-text { font-size:13px; color:#4A4A6A; line-height:1.7; margin-bottom:14px; }
+    .rv-meta { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--border); }
+    .rv-author { font-size:11px; font-weight:600; color:var(--text-sub); }
+    .rv-date { font-size:11px; color:var(--text-sub); }
+    .rv-empty { text-align:center; padding:3rem; color:var(--text-sub); font-size:13px; grid-column:1/-1; }
   </style>
 </head>
 <body>
@@ -351,6 +389,34 @@
       <div class="insight-tag" style="background:var(--red-light);color:#DC2626">가격 검토</div>
     </div>
   </div>
+</div>
+
+<!-- 리뷰 섹션 -->
+<div class="main" style="padding-top:0">
+  <div class="review-section-title">💬 고객 리뷰 분석</div>
+  <div class="review-section-sub">채널별 리뷰 · 긍정/부정 지수 · 고객 피드백</div>
+
+  <div class="review-ch-tabs" id="reviewTabs">
+    <button class="review-ch-tab active" data-ch="전체" onclick="selectReviewCh('전체')">전체</button>
+    <button class="review-ch-tab" data-ch="29CM" onclick="selectReviewCh('29CM')">29CM</button>
+    <button class="review-ch-tab" data-ch="공식몰" onclick="selectReviewCh('공식몰')">공식몰</button>
+    <button class="review-ch-tab" data-ch="보블릭" onclick="selectReviewCh('보블릭')">보블릭</button>
+    <button class="review-ch-tab" data-ch="퓨처테리어" onclick="selectReviewCh('퓨처테리어')">퓨처테리어</button>
+  </div>
+
+  <div class="review-summary" id="reviewSummary"></div>
+
+  <div class="sentiment-bar-wrap">
+    <div class="sentiment-bar-title">긍정 · 중립 · 부정 비율</div>
+    <div class="sbar-track" id="sentimentBar"></div>
+    <div class="sbar-legend">
+      <div class="sbar-legend-item"><div class="sbar-legend-dot" style="background:#22C55E"></div><span id="legPos">긍정 0%</span></div>
+      <div class="sbar-legend-item"><div class="sbar-legend-dot" style="background:#F59E0B"></div><span id="legNeu">중립 0%</span></div>
+      <div class="sbar-legend-item"><div class="sbar-legend-dot" style="background:#EF4444"></div><span id="legNeg">부정 0%</span></div>
+    </div>
+  </div>
+
+  <div class="review-cards" id="reviewCards"></div>
 </div>
 
 <footer>LLS Sales Dashboard · 데이터 기준일 2026.06.29</footer>
@@ -705,8 +771,84 @@ function openRegionModal(region) {
 function closeRegionModal() { document.getElementById('regionModal').classList.remove('open'); }
 function closeModal(e) { if (e.target === document.getElementById('regionModal')) closeRegionModal(); }
 
+const REVIEWS = [
+  { id:'17726770', ch:'29CM', stars:3, product:'LLS USB-C SOCKET+CABLE PACKAGE', text:'멀티탭이랑 케이블 같이 샀는데 케이블은 너무 만족하지만 멀티탭이 약간 잘 안 꽂히는거 같아요.... ㅜㅜ 충전기가 멀티탭에 잘 안 고정되는데 이거 제 것만 그런건지 잘 모르겠어요', author:'이*인', date:'2026-06-28', order:'ORD20260610-7791868' },
+  { id:'17726761', ch:'29CM', stars:3, product:'ROPE STRAP CABLE CtoC(60w) / CAMPER GREEN', text:'멀티탭이랑 케이블 같이 샀는데 케이블은 너무 만족하지만 멀티탭이 약간 잘 안 꽂히는거 같아요.... ㅜㅜ 충전기가 멀티탭에 잘 안 고정되는데 이거 제 것만 그런건지 잘 모르겠어요', author:'이*인', date:'2026-06-28', order:'ORD20260610-7791868' },
+  { id:'17726554', ch:'29CM', stars:4, product:'LLS 3-SOCKET/USB-C 1.5M', text:'튼튼하고 인테리어 소품으로 분위기 내기도 좋습니다. 가격이 조금 비싸서 많이 망설였는데 블랙도 하나 더 살까 고민되네요', author:'묵*정', date:'2026-06-28', order:'ORD20260506-6857027' },
+  { id:'17686644', ch:'29CM', stars:5, product:'EXTENSION 3-SOCKET / CAMPER GREEN 1.5m', text:'오프라인에서 보고 반해서 구매했어요 바닥에 두어도 밀리지 않고 고정되어 있어서 훨씬 편하게 사용가능해요! 길이가 더 긴 제품도 나오면 사고 싶어요~', author:'주*송', date:'2026-06-24', order:'ORD20260621-6036077' },
+];
+
+function getSentiment(stars) {
+  if (stars >= 4) return 'positive';
+  if (stars === 3) return 'neutral';
+  return 'negative';
+}
+function sentimentLabel(s) { return s==='positive'?'긍정':s==='neutral'?'중립':'부정'; }
+function sentimentBadgeCls(s) { return s==='positive'?'pos':s==='neutral'?'neu':'neg'; }
+function starStr(n) { return '★'.repeat(n)+'☆'.repeat(5-n); }
+
+let selectedReviewCh = '전체';
+
+function selectReviewCh(ch) {
+  selectedReviewCh = ch;
+  document.querySelectorAll('.review-ch-tab').forEach(el => el.classList.toggle('active', el.dataset.ch === ch));
+  renderReviews();
+}
+
+function renderReviews() {
+  const filtered = selectedReviewCh === '전체' ? REVIEWS : REVIEWS.filter(r => r.ch === selectedReviewCh);
+  const total = filtered.length;
+
+  // KPI 요약
+  const avgStars = total > 0 ? (filtered.reduce((s,r)=>s+r.stars,0)/total).toFixed(1) : '0.0';
+  const pos = filtered.filter(r=>getSentiment(r.stars)==='positive').length;
+  const neu = filtered.filter(r=>getSentiment(r.stars)==='neutral').length;
+  const neg = filtered.filter(r=>getSentiment(r.stars)==='negative').length;
+  const posP = total>0 ? Math.round(pos/total*100) : 0;
+  const neuP = total>0 ? Math.round(neu/total*100) : 0;
+  const negP = total>0 ? Math.round(neg/total*100) : 0;
+
+  document.getElementById('reviewSummary').innerHTML = `
+    <div class="rv-kpi"><div class="rv-kpi-val">${total}</div><div class="rv-kpi-lbl">총 리뷰</div></div>
+    <div class="rv-kpi"><div class="rv-kpi-val" style="color:#F59E0B">${avgStars}<span style="font-size:14px">★</span></div><div class="rv-kpi-lbl">평균 별점</div></div>
+    <div class="rv-kpi"><div class="rv-kpi-val" style="color:#22C55E">${posP}%</div><div class="rv-kpi-lbl">긍정 지수</div></div>
+    <div class="rv-kpi"><div class="rv-kpi-val" style="color:#F59E0B">${neuP}%</div><div class="rv-kpi-lbl">중립 지수</div></div>
+    <div class="rv-kpi"><div class="rv-kpi-val" style="color:#EF4444">${negP}%</div><div class="rv-kpi-lbl">부정 지수</div></div>`;
+
+  document.getElementById('sentimentBar').innerHTML =
+    `<div class="sbar-pos" style="width:${posP}%"></div>
+     <div class="sbar-neu" style="width:${neuP}%"></div>
+     <div class="sbar-neg" style="width:${negP}%"></div>`;
+  document.getElementById('legPos').textContent = `긍정 ${posP}% (${pos}건)`;
+  document.getElementById('legNeu').textContent = `중립 ${neuP}% (${neu}건)`;
+  document.getElementById('legNeg').textContent = `부정 ${negP}% (${neg}건)`;
+
+  if (total === 0) {
+    document.getElementById('reviewCards').innerHTML = `<div class="rv-empty">해당 채널의 리뷰 데이터가 없습니다</div>`;
+    return;
+  }
+
+  document.getElementById('reviewCards').innerHTML = filtered.map(r => {
+    const s = getSentiment(r.stars);
+    const starColor = r.stars>=4 ? '#F59E0B' : r.stars===3 ? '#94A3B8' : '#EF4444';
+    return `<div class="review-card ${s}">
+      <div class="rv-top">
+        <div class="rv-stars" style="color:${starColor}">${starStr(r.stars)}</div>
+        <span class="rv-badge ${sentimentBadgeCls(s)}">${sentimentLabel(s)}</span>
+      </div>
+      <div class="rv-product">📦 ${r.product}</div>
+      <div class="rv-text">${r.text}</div>
+      <div class="rv-meta">
+        <span class="rv-author">👤 ${r.author}</span>
+        <span class="rv-date">${r.date} · ${r.ch}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 buildDateTabs();
 updateAll();
+renderReviews();
 </script>
 </body>
 </html>
