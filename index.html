@@ -172,19 +172,32 @@
     </div>
     <div class="card">
       <div class="card-header">
-        <div class="card-title">공헌이익 vs 수수료</div>
-        <div class="toggle-group">
-          <button class="toggle-btn active" id="btnAll" onclick="setProfitMode('all')">전체</button>
-          <button class="toggle-btn g" id="btnContrib" onclick="setProfitMode('contrib')">공헌이익</button>
-          <button class="toggle-btn r" id="btnFee" onclick="setProfitMode('fee')">수수료</button>
+        <div class="card-title">공헌이익 · 수수료 · 원가</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem">
+        <div style="background:#edfaf4;border-radius:12px;padding:12px 14px">
+          <div style="font-size:10px;font-weight:600;color:#1D9E75;margin-bottom:6px;letter-spacing:0.04em">공헌이익</div>
+          <div id="sbContrib" style="font-size:20px;font-weight:700;color:#1D9E75;line-height:1">–</div>
+          <div id="sbContribSub" style="font-size:10px;color:#5cba8e;margin-top:4px">실결제 – 수수료</div>
+        </div>
+        <div style="background:#fff3f3;border-radius:12px;padding:12px 14px">
+          <div style="font-size:10px;font-weight:600;color:#c0392b;margin-bottom:6px;letter-spacing:0.04em">수수료</div>
+          <div id="sbFee" style="font-size:20px;font-weight:700;color:#c0392b;line-height:1">–</div>
+          <div id="sbFeeSub" style="font-size:10px;color:#e08080;margin-top:4px">채널 수수료 합계</div>
+        </div>
+        <div style="background:#fef7ec;border-radius:12px;padding:12px 14px">
+          <div style="font-size:10px;font-weight:600;color:#BA7517;margin-bottom:6px;letter-spacing:0.04em">원가 합계</div>
+          <div id="sbCost" style="font-size:20px;font-weight:700;color:#BA7517;line-height:1">–</div>
+          <div id="sbCostSub" style="font-size:10px;color:#c89040;margin-top:4px">매입 원가 합계</div>
         </div>
       </div>
-      <div class="chart-wrap" style="height:210px">
+      <div class="chart-wrap" style="height:170px">
         <canvas id="stackBar" role="img" aria-label="채널별 공헌이익과 수수료 차트"></canvas>
       </div>
-      <div style="display:flex;gap:12px;margin-top:12px;font-size:12px;color:#888">
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>공헌이익</span>
-        <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f09595;display:inline-block"></span>수수료</span>
+      <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;color:#aaa">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#1D9E75;display:inline-block"></span>공헌이익</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#f09595;display:inline-block"></span>수수료</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#f5c87a;display:inline-block"></span>원가</span>
       </div>
     </div>
   </div>
@@ -413,16 +426,29 @@ function updateStackBar(d) {
   const chs = ['공식몰','29CM','보블릭','퓨처테리어'];
   const contribs = chs.map(c => Math.round((d.ch[c]?.paidRev||0)-(d.ch[c]?.fee||0)));
   const fees     = chs.map(c => Math.round(d.ch[c]?.fee||0));
-  let datasets;
-  if (profitMode==='all')    datasets=[{label:'공헌이익',data:contribs,backgroundColor:'#1D9E75',borderRadius:4},{label:'수수료',data:fees,backgroundColor:'#f09595',borderRadius:4}];
-  else if (profitMode==='contrib') datasets=[{label:'공헌이익',data:contribs,backgroundColor:'#1D9E75',borderRadius:4}];
-  else datasets=[{label:'수수료',data:fees,backgroundColor:'#f09595',borderRadius:4}];
-  const stacked = profitMode==='all';
+  const costs    = chs.map(c => Math.round(d.ch[c]?.cost||0));
+
+  // 숫자 박스 업데이트
+  const feeRate  = d.tPaid>0 ? (d.tFee/d.tPaid*100).toFixed(1) : '0.0';
+  const costRate = d.tPaid>0 ? (d.tCost/d.tPaid*100).toFixed(1) : '0.0';
+  const cRate    = d.tPaid>0 ? (d.tContrib/d.tPaid*100).toFixed(1) : '0.0';
+  document.getElementById('sbContrib').textContent = fmt(d.tContrib)+'원';
+  document.getElementById('sbContribSub').textContent = '이익률 '+cRate+'%';
+  document.getElementById('sbFee').textContent = fmt(d.tFee)+'원';
+  document.getElementById('sbFeeSub').textContent = '수수료율 '+feeRate+'%';
+  document.getElementById('sbCost').textContent = fmt(d.tCost)+'원';
+  document.getElementById('sbCostSub').textContent = '원가율 '+costRate+'%';
+
   if (stackBarChart) stackBarChart.destroy();
   stackBarChart = new Chart(document.getElementById('stackBar'), {
-    type:'bar', data:{labels:chs,datasets},
+    type:'bar',
+    data:{ labels:chs, datasets:[
+      {label:'공헌이익', data:contribs, backgroundColor:'#1D9E75', borderRadius:4, stack:'s'},
+      {label:'수수료',   data:fees,     backgroundColor:'#f09595', borderRadius:4, stack:'s'},
+      {label:'원가',     data:costs,    backgroundColor:'#f5c87a', borderRadius:4, stack:'s'},
+    ]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales:{ x:{stacked,ticks:{font:{size:11}},grid:{display:false}}, y:{stacked,ticks:{font:{size:11},callback:v=>(v/10000).toFixed(0)+'만'},grid:{color:'#f4f4f4'}} } }
+      scales:{ x:{stacked:true,ticks:{font:{size:11}},grid:{display:false}}, y:{stacked:true,ticks:{font:{size:11},callback:v=>(v/10000).toFixed(0)+'만'},grid:{color:'#f4f4f4'}} } }
   });
 }
 
