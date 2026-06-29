@@ -623,7 +623,6 @@ function updateKPIs(d) {
   else if (y !== 'all') { label = `${y}년 전체`; }
   else { label = '전체 기간'; }
   document.getElementById('headerDate').textContent = label;
-  const cnt = getFiltered().length;
   document.getElementById('filterBadge').textContent = `${cnt}건`;
 }
 
