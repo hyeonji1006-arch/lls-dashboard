@@ -463,8 +463,8 @@
 <script>
 const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900 };
 const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15 };
-const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7' };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40 };
+const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
@@ -500,6 +500,14 @@ const ORDERS = [
   {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:9900,  qty:1, date:'2026-06-26', addr:'경기 화성시 동탄구 동탄대로24길 117 (동탄파크자이) 337동 1503호'},
   {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,  qty:1, date:'2026-06-26', addr:'전남 순천시 연향1로 55 (연향동, 부영1차아파트) 106동 1205호'},
   {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,  qty:1, date:'2026-06-26', addr:'서울 영등포구 문래로 82 (문래동, 문래힐스테이트) 110동 1002호'},
+  {ch:'콘란샵',code:'LLS_C_BK01', paid:4900000, qty:50, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_C_OR01', paid:4900000, qty:50, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_C_GR01', paid:3920000, qty:40, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_C_BL01', paid:3920000, qty:40, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_3_BK01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_3_OR01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_3_GR01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  {ch:'콘란샵',code:'LLS_3_BL01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
 ];
 
 function normalizeRegion(addr) {
@@ -638,7 +646,7 @@ function updateKPIs(d) {
 }
 
 function updateDonut(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵'];
   const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -742,7 +750,7 @@ function updateRegion(d) {
 }
 
 function updateDiscount(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵'];
   const discs = chs.map(c => {
     const v = d.ch[c];
     if (!v||v.listRev===0) return 0;
