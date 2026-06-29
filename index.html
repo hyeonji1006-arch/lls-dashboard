@@ -420,6 +420,19 @@
   </div>
 
   <div class="review-cards" id="reviewCards"></div>
+
+  <!-- 키워드 버블 -->
+  <div class="card" style="margin-top:1.5rem">
+    <div class="card-title">
+      <div class="card-title-text"><span class="card-title-dot" style="background:#A855F7"></span>리뷰 키워드 버블</div>
+      <div style="display:flex;gap:10px;font-size:11px">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block"></span>긍정</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#EF4444;display:inline-block"></span>부정</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:#4F6EF7;display:inline-block"></span>중립</span>
+      </div>
+    </div>
+    <svg id="keywordSvg" viewBox="0 0 700 340" style="width:100%;height:340px"></svg>
+  </div>
 </div>
 
 <footer>LLS Sales Dashboard · 데이터 기준일 2026.06.29</footer>
@@ -809,6 +822,10 @@ const REVIEWS = [
   { id:'17726761', ch:'29CM', stars:3, product:'ROPE STRAP CABLE CtoC(60w) / CAMPER GREEN', text:'멀티탭이랑 케이블 같이 샀는데 케이블은 너무 만족하지만 멀티탭이 약간 잘 안 꽂히는거 같아요.... ㅜㅜ 충전기가 멀티탭에 잘 안 고정되는데 이거 제 것만 그런건지 잘 모르겠어요', author:'이*인', date:'2026-06-28', order:'ORD20260610-7791868' },
   { id:'17726554', ch:'29CM', stars:4, product:'LLS 3-SOCKET/USB-C 1.5M', text:'튼튼하고 인테리어 소품으로 분위기 내기도 좋습니다. 가격이 조금 비싸서 많이 망설였는데 블랙도 하나 더 살까 고민되네요', author:'묵*정', date:'2026-06-28', order:'ORD20260506-6857027' },
   { id:'17686644', ch:'29CM', stars:5, product:'EXTENSION 3-SOCKET / CAMPER GREEN 1.5m', text:'오프라인에서 보고 반해서 구매했어요 바닥에 두어도 밀리지 않고 고정되어 있어서 훨씬 편하게 사용가능해요! 길이가 더 긴 제품도 나오면 사고 싶어요~', author:'주*송', date:'2026-06-24', order:'ORD20260621-6036077' },
+  { id:'17662017', ch:'29CM', stars:5, product:'EXTENSION 3-SOCKET / ZESTY ORANGE 1.5m', text:'가격은 매우 사악 한데 .. 그래도 실제로 받아보니 이쁘긴 해요 고장만 안나면 좋겠네요 가격이 조금만 저렴했음 좋겠어요 .. 그럼 하나더 살것 같네용', author:'문*나', date:'2026-06-22', order:'ORD20260612-1406387' },
+  { id:'17658746', ch:'29CM', stars:3, product:'EXTENSION 3-SOCKET / YIN-YANG BLACK 1.5m', text:'디자인이 예뻐서 구입했는데 제가 가지고 있는 가전 콘센트를 끼우면 좀 헐거운 느낌이 들어요.', author:'김*경', date:'2026-06-22', order:'ORD20260608-4703970' },
+  { id:'17657662', ch:'29CM', stars:4, product:'EXTENSION USB-C SOCKET / YIN-YANG BLACK 1.5m', text:'비싸도 일반 멀티탭보다는 심플하고 멋스러워서 구매했는데, 괜찮은 것 같아요!! 잘쓰겠습니다~~', author:'권*자', date:'2026-06-22', order:'ORD20260422-8305472' },
+  { id:'17652602', ch:'29CM', stars:5, product:'LLS 3-SOCKET/USB-C 1.5M', text:'이쁘고 디자인적으로 너무좋습니다 인테리어에도 도움되어요 클리어런스로 저렴하게 구입했고 추가 구매도 했습니다', author:'오*윤', date:'2026-06-21', order:'ORD20260509-8731288' },
 ];
 
 function getSentiment(stars) {
@@ -879,9 +896,78 @@ function renderReviews() {
   }).join('');
 }
 
+const KEYWORDS = [
+  { word:'멀티탭',   count:3, color:'#4F6EF7' },
+  { word:'이쁘다',   count:3, color:'#22C55E' },
+  { word:'비싸다',   count:3, color:'#EF4444' },
+  { word:'고정',     count:3, color:'#6B7280' },
+  { word:'가격',     count:2, color:'#F59E0B' },
+  { word:'케이블',   count:2, color:'#1D9E75' },
+  { word:'인테리어', count:2, color:'#A855F7' },
+  { word:'디자인',   count:2, color:'#A855F7' },
+  { word:'저렴',     count:2, color:'#22C55E' },
+  { word:'만족',     count:2, color:'#22C55E' },
+  { word:'튼튼',     count:1, color:'#16A34A' },
+  { word:'심플',     count:1, color:'#4F6EF7' },
+  { word:'추가구매', count:1, color:'#F59E0B' },
+  { word:'편하다',   count:1, color:'#22C55E' },
+  { word:'헐거움',   count:1, color:'#EF4444' },
+  { word:'고장우려', count:1, color:'#EF4444' },
+];
+
+function layoutBubbles(kws, W, H) {
+  const maxC = Math.max(...kws.map(k=>k.count));
+  const minC = Math.min(...kws.map(k=>k.count));
+  const sorted = [...kws].sort((a,b) => b.count - a.count);
+  sorted.forEach(k => {
+    k.r = Math.round(28 + (k.count - minC) / Math.max(1, maxC - minC) * 34);
+  });
+  const placed = [];
+  const cx = W/2, cy = H/2;
+  sorted.forEach((k, i) => {
+    if (i === 0) { k.x = cx; k.y = cy; placed.push(k); return; }
+    let done = false;
+    for (let dist = k.r + 10; dist < Math.max(W,H) && !done; dist += 4) {
+      for (let a = 0; a < 360 && !done; a += 8) {
+        const rad = a * Math.PI / 180;
+        const tx = cx + dist * Math.cos(rad);
+        const ty = cy + dist * Math.sin(rad);
+        if (tx-k.r<8||tx+k.r>W-8||ty-k.r<8||ty+k.r>H-8) continue;
+        if (placed.every(p => Math.hypot(tx-p.x, ty-p.y) >= p.r+k.r+5)) {
+          k.x = tx; k.y = ty; placed.push(k); done = true;
+        }
+      }
+    }
+    if (!done) { k.x = k.r+10; k.y = k.r+10; placed.push(k); }
+  });
+  return sorted;
+}
+
+function renderKeywordBubbles() {
+  const svg = document.getElementById('keywordSvg');
+  if (!svg) return;
+  const laid = layoutBubbles(KEYWORDS, 700, 340);
+  svg.innerHTML = laid.map(k => {
+    const fs = k.r >= 58 ? 14 : k.r >= 46 ? 13 : 11;
+    const hex = k.color.replace('#','');
+    const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+    return `<g>
+      <circle cx="${k.x}" cy="${k.y}" r="${k.r}" fill="rgba(${r},${g},${b},0.18)"/>
+      <circle cx="${k.x}" cy="${k.y}" r="${k.r-3}" fill="${k.color}" opacity="0.82"/>
+      <text x="${k.x}" y="${k.y - (k.r>=44?5:3)}" text-anchor="middle" dominant-baseline="middle"
+        fill="#fff" font-size="${fs}" font-weight="700"
+        font-family="Apple SD Gothic Neo,Malgun Gothic,sans-serif">${k.word}</text>
+      <text x="${k.x}" y="${k.y + fs + (k.r>=44?2:0)}" text-anchor="middle" dominant-baseline="middle"
+        fill="rgba(255,255,255,0.75)" font-size="9"
+        font-family="Apple SD Gothic Neo,Malgun Gothic,sans-serif">${k.count}회 언급</text>
+    </g>`;
+  }).join('');
+}
+
 buildDropdowns();
 updateAll();
 renderReviews();
+renderKeywordBubbles();
 </script>
 </body>
 </html>
