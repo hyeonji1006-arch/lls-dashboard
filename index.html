@@ -785,7 +785,7 @@ function openRegionModal(region) {
       const dongho = extractDongHo(bOrders[0].addr);
       const detailAddr = bOrders[0].addr.replace(/^서울특별시\s*|^서울\s*/,'');
       html += `<div class="order-row">
-        <div class="order-building">🏢 ${bld}${dongho ? ' · ' + dongho : ''}</div>
+        <div class="order-building">🏢 ${bld}</div>
         <div class="order-detail" title="${bOrders[0].addr}">${detailAddr}</div>
         <div class="order-tags">`;
       bOrders.forEach(o => {
