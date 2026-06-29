@@ -47,16 +47,9 @@
     .filter-wrap { background:var(--card); border-radius:var(--radius); padding:1rem 1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
     .filter-label { font-size:11px; font-weight:700; color:var(--text-sub); letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; }
     .divider { width:1px; height:24px; background:var(--border); }
-    .month-pill { padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; border:none; cursor:pointer; background:var(--primary); color:#fff; }
-    .date-tabs { display:flex; gap:6px; flex-wrap:wrap; }
-    .date-tab { padding:6px 14px; border-radius:10px; font-size:12px; border:none; cursor:pointer; background:var(--bg); color:var(--text-sub); text-align:center; min-width:54px; transition:all 0.15s; font-weight:500; }
-    .date-tab .dn { font-weight:700; font-size:13px; display:block; }
-    .date-tab .dw { font-size:10px; }
-    .date-tab.sat .dw { color:var(--primary); }
-    .date-tab.sun .dw { color:var(--red); }
-    .date-tab.active { background:var(--primary); color:#fff; }
-    .date-tab.active .dw { color:rgba(255,255,255,0.7); }
-    .date-tab.all-tab { line-height:2.6; font-weight:700; }
+    .date-select { padding:7px 14px; border-radius:10px; font-size:13px; font-weight:600; border:1.5px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; outline:none; transition:border-color 0.15s; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B8BA7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+    .date-select:focus { border-color:var(--primary); }
+    .date-select:hover { border-color:#C4C8F8; }
 
     /* ── KPI Grid ── */
     .kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:1.5rem; }
@@ -237,7 +230,17 @@
   <div class="filter-wrap">
     <span class="filter-label">기간</span>
     <div class="divider"></div>
-    <div class="date-tabs" id="dateTabs"></div>
+    <select id="selYear" class="date-select" onchange="onDropdownChange()">
+      <option value="all">전체 년도</option>
+      <option value="2026" selected>2026년</option>
+    </select>
+    <select id="selMonth" class="date-select" onchange="onDropdownChange()">
+      <option value="all">전체 월</option>
+    </select>
+    <select id="selDay" class="date-select" onchange="onDropdownChange()">
+      <option value="all">전체 일자</option>
+    </select>
+    <span id="filterBadge" style="font-size:11px;color:var(--text-sub);background:var(--bg);padding:5px 12px;border-radius:8px;font-weight:600"></span>
   </div>
 
   <div class="kpi-grid">
@@ -508,32 +511,57 @@ function extractDongHo(addr) {
   return m ? m[0] : '';
 }
 
-let selectedDate = 'all';
 let donutChart, stackBarChart, discountChartObj;
 
-function buildDateTabs() {
+function buildDropdowns() {
   const dates = [...new Set(ORDERS.map(o => o.date))].sort();
-  const container = document.getElementById('dateTabs');
-  let html = `<button class="date-tab all-tab active" data-date="all" onclick="selectDate('all')">전체</button>`;
-  dates.forEach(d => {
-    const dt = new Date(d + 'T00:00:00');
-    const di = dt.getDay();
-    const cls = di === 0 ? 'sun' : di === 6 ? 'sat' : '';
-    html += `<button class="date-tab ${cls}" data-date="${d}" onclick="selectDate('${d}')">
-      <span class="dn">${dt.getDate()}</span><span class="dw">${DAYS[di]}</span>
-    </button>`;
+  const months = [...new Set(dates.map(d => d.slice(0,7)))].sort();
+  const selMonth = document.getElementById('selMonth');
+  months.forEach(m => {
+    const [y, mo] = m.split('-');
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = `${parseInt(mo)}월`;
+    selMonth.appendChild(opt);
   });
-  container.innerHTML = html;
+  buildDayOptions();
 }
 
-function selectDate(date) {
-  selectedDate = date;
-  document.querySelectorAll('.date-tab').forEach(el => el.classList.toggle('active', el.dataset.date === date));
+function buildDayOptions() {
+  const selYear  = document.getElementById('selYear').value;
+  const selMonth = document.getElementById('selMonth').value;
+  const selDay   = document.getElementById('selDay');
+  const prev = selDay.value;
+  selDay.innerHTML = '<option value="all">전체 일자</option>';
+  const dates = [...new Set(ORDERS.map(o => o.date))].sort().filter(d => {
+    if (selYear  !== 'all' && !d.startsWith(selYear))  return false;
+    if (selMonth !== 'all' && !d.startsWith(selMonth)) return false;
+    return true;
+  });
+  dates.forEach(d => {
+    const dt = new Date(d + 'T00:00:00');
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = `${dt.getDate()}일 (${DAYS[dt.getDay()]})`;
+    selDay.appendChild(opt);
+  });
+  if ([...selDay.options].some(o => o.value === prev)) selDay.value = prev;
+}
+
+function onDropdownChange() {
+  buildDayOptions();
   updateAll();
 }
 
 function getFiltered() {
-  return selectedDate === 'all' ? ORDERS : ORDERS.filter(o => o.date === selectedDate);
+  const y = document.getElementById('selYear').value;
+  const m = document.getElementById('selMonth').value;
+  const d = document.getElementById('selDay').value;
+  return ORDERS.filter(o => {
+    if (y !== 'all' && !o.date.startsWith(y))  return false;
+    if (m !== 'all' && !o.date.startsWith(m))  return false;
+    if (d !== 'all' && o.date !== d)            return false;
+    return true;
+  });
 }
 
 function fmt(n) { return Math.round(n).toLocaleString('ko-KR'); }
@@ -573,12 +601,17 @@ function updateKPIs(d) {
   document.getElementById('kpi5').innerHTML = fmt(d.tContrib)+'<span class="unit">원</span>';
   document.getElementById('kpi5s').innerHTML = `<span class="kpi-badge badge-up">이익률 ${cr}%</span>`;
 
-  if (selectedDate === 'all') {
-    document.getElementById('headerDate').textContent = '2026.06 전체';
-  } else {
-    const dt = new Date(selectedDate+'T00:00:00');
-    document.getElementById('headerDate').textContent = `2026.06.${String(dt.getDate()).padStart(2,'0')} (${DAYS[dt.getDay()]})`;
-  }
+  const y = document.getElementById('selYear').value;
+  const m = document.getElementById('selMonth').value;
+  const dv = document.getElementById('selDay').value;
+  let label = '';
+  if (dv !== 'all') { const dt = new Date(dv+'T00:00:00'); label = `${dv} (${DAYS[dt.getDay()]})`; }
+  else if (m !== 'all') { const [yr,mo] = m.split('-'); label = `${yr}년 ${parseInt(mo)}월`; }
+  else if (y !== 'all') { label = `${y}년 전체`; }
+  else { label = '전체 기간'; }
+  document.getElementById('headerDate').textContent = label;
+  const cnt = getFiltered().length;
+  document.getElementById('filterBadge').textContent = `${cnt}건`;
 }
 
 function updateDonut(d) {
@@ -846,7 +879,7 @@ function renderReviews() {
   }).join('');
 }
 
-buildDateTabs();
+buildDropdowns();
 updateAll();
 renderReviews();
 </script>
