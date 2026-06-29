@@ -594,7 +594,7 @@ function getFiltered() {
 }
 
 function fmt(n) { return Math.round(n).toLocaleString('ko-KR'); }
-function fmtM(n) { return n >= 10000 ? (n/10000).toFixed(1)+'만' : fmt(n); }
+function fmtM(n) { return fmt(n); }
 
 function compute(orders) {
   const ch = {}, reg = {};
