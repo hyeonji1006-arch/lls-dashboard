@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLS 매출 분석 대시보드</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: #f4f5f7;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e8e8e8;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .logo {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #1a1a2e;
+    }
+
+    header .date-badge {
+      font-size: 12px;
+      color: #888;
+      background: #f4f5f7;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #e8e8e8;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .page-sub {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid #f0f0f0;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value span {
+      font-size: 14px;
+      font-weight: 400;
+      color: #999;
+      margin-left: 2px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .kpi-sub .up { color: #22c55e; font-weight: 600; }
+    .kpi-sub .down { color: #ef4444; font-weight: 600; }
+
+    /* Chart Rows */
+    .chart-row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-row-2 { grid-template-columns: 1fr 1fr; }
+    .chart-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid #f0f0f0;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 1.25rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Channel rank table */
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .rank-table th {
+      font-size: 11px;
+      color: #aaa;
+      font-weight: 500;
+      text-align: left;
+      padding: 0 0 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .rank-table th:not(:first-child) { text-align: right; }
+
+    .rank-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid #f8f8f8;
+      vertical-align: middle;
+    }
+
+    .rank-table td:not(:first-child) { text-align: right; }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .ch-name { font-weight: 600; color: #1a1a2e; }
+    .ch-sub  { font-size: 11px; color: #aaa; }
+    .num-main { font-weight: 600; color: #1a1a2e; font-size: 13px; }
+    .num-sub  { font-size: 11px; color: #aaa; }
+
+    .discount-bar-wrap {
+      width: 100%;
+      background: #f4f5f7;
+      border-radius: 4px;
+      height: 6px;
+      margin-top: 4px;
+    }
+
+    .discount-bar {
+      height: 6px;
+      border-radius: 4px;
+    }
+
+    /* Region list */
+    .region-list { list-style: none; }
+
+    .region-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f8f8f8;
+    }
+
+    .region-item:last-child { border-bottom: none; }
+
+    .region-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ccc;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .region-rank.top { color: #185FA5; }
+
+    .region-name { font-size: 13px; font-weight: 600; color: #333; flex: 1; }
+
+    .region-bar-wrap {
+      flex: 2;
+      background: #f4f5f7;
+      border-radius: 4px;
+      height: 6px;
+    }
+
+    .region-bar {
+      height: 6px;
+      border-radius: 4px;
+      background: #185FA5;
+    }
+
+    .region-amount {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Insight box */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .insight-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 1.25rem;
+      border-left: 4px solid;
+      border-top: 1px solid #f0f0f0;
+      border-right: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .insight-card.blue  { border-left-color: #185FA5; }
+    .insight-card.green { border-left-color: #1D9E75; }
+    .insight-card.red   { border-left-color: #E24B4A; }
+
+    .insight-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .insight-text {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .insight-text strong { color: #1a1a2e; }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: #ccc;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">LLS · 매출 분석</div>
+  <div class="date-badge">2026.06.29 기준</div>
+</header>
+
+<div class="main">
+  <div class="page-title">매출 분석 대시보드</div>
+  <div class="page-sub">판매처별 실결제 매출 · 공헌이익 · 할인율 · 지역 분포</div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot" style="background:#b5d4f4"></span>판매가 기준 매출</div>
+      <div class="kpi-value">2,235,700<span>원</span></div>
+      <div class="kpi-sub">총 32건 · 4개 채널</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot" style="background:#185FA5"></span>실결제 기준 매출</div>
+      <div class="kpi-value">2,123,594<span>원</span></div>
+      <div class="kpi-sub">할인율 평균 <span class="down">5.0%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot" style="background:#f09595"></span>마케팅비용 (수수료)</div>
+      <div class="kpi-value">300,483<span>원</span></div>
+      <div class="kpi-sub">실결제 대비 <span class="down">14.1%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot" style="background:#1D9E75"></span>공헌이익</div>
+      <div class="kpi-value" style="color:#1D9E75">1,823,111<span>원</span></div>
+      <div class="kpi-sub">공헌이익률 <span class="up">85.9%</span></div>
+    </div>
+  </div>
+
+  <!-- Charts row 1 -->
+  <div class="chart-row chart-row-2">
+    <div class="card">
+      <div class="card-title">판매처별 매출 비중 (실결제 기준)</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="donutChart" role="img" aria-label="판매처별 실결제 매출 도넛 차트"></canvas>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12px;color:#888">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#185FA5;display:inline-block"></span>공식몰 44.5%</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>29CM 31.6%</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30;display:inline-block"></span>보블릭 13.9%</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#888780;display:inline-block"></span>퓨처테리어 10.0%</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">공헌이익 vs 마케팅비용</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="stackBar" role="img" aria-label="채널별 공헌이익과 수수료 누적 바 차트"></canvas>
+      </div>
+      <div style="display:flex;gap:14px;margin-top:14px;font-size:12px;color:#888">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>공헌이익</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#f09595;display:inline-block"></span>수수료</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row 2 -->
+  <div class="chart-row chart-row-2" style="margin-bottom:1.5rem">
+
+    <!-- Channel rank table -->
+    <div class="card">
+      <div class="card-title">판매처별 상세 현황</div>
+      <table class="rank-table">
+        <thead>
+          <tr>
+            <th>판매처</th>
+            <th>실결제 매출</th>
+            <th>공헌이익</th>
+            <th>할인율</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="rank-badge" style="background:#dbeafe;color:#185FA5">1</span>
+              <span class="ch-name">공식몰</span><br>
+              <span style="margin-left:30px" class="ch-sub">수수료 3.5%</span>
+            </td>
+            <td>
+              <div class="num-main">945,794원</div>
+              <div class="num-sub">판매가 957,000원</div>
+            </td>
+            <td>
+              <div class="num-main" style="color:#1D9E75">912,691원</div>
+              <div class="num-sub">마케팅비 33,103원</div>
+            </td>
+            <td>
+              <div class="num-main">1.2%</div>
+              <div class="discount-bar-wrap"><div class="discount-bar" style="width:4%;background:#185FA5"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="rank-badge" style="background:#dcfce7;color:#1D9E75">2</span>
+              <span class="ch-name">29CM</span><br>
+              <span style="margin-left:30px" class="ch-sub">수수료 25%</span>
+            </td>
+            <td>
+              <div class="num-main">671,900원</div>
+              <div class="num-sub">판매가 671,900원</div>
+            </td>
+            <td>
+              <div class="num-main" style="color:#1D9E75">503,925원</div>
+              <div class="num-sub">마케팅비 167,975원</div>
+            </td>
+            <td>
+              <div class="num-main">0.0%</div>
+              <div class="discount-bar-wrap"><div class="discount-bar" style="width:1%;background:#1D9E75"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="rank-badge" style="background:#fce8e0;color:#D85A30">3</span>
+              <span class="ch-name">보블릭</span><br>
+              <span style="margin-left:30px" class="ch-sub">수수료 23%</span>
+            </td>
+            <td>
+              <div class="num-main">294,000원</div>
+              <div class="num-sub">판매가 294,000원</div>
+            </td>
+            <td>
+              <div class="num-main" style="color:#1D9E75">226,380원</div>
+              <div class="num-sub">마케팅비 67,620원</div>
+            </td>
+            <td>
+              <div class="num-main">0.0%</div>
+              <div class="discount-bar-wrap"><div class="discount-bar" style="width:1%;background:#D85A30"></div></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="rank-badge" style="background:#f3f3f3;color:#666">4</span>
+              <span class="ch-name">퓨처테리어</span><br>
+              <span style="margin-left:30px" class="ch-sub">수수료 15%</span>
+            </td>
+            <td>
+              <div class="num-main">211,900원</div>
+              <div class="num-sub">판매가 312,800원</div>
+            </td>
+            <td>
+              <div class="num-main" style="color:#1D9E75">180,115원</div>
+              <div class="num-sub">마케팅비 31,785원</div>
+            </td>
+            <td>
+              <div class="num-main" style="color:#E24B4A">32.3%</div>
+              <div class="discount-bar-wrap"><div class="discount-bar" style="width:81%;background:#E24B4A"></div></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Region list -->
+    <div class="card">
+      <div class="card-title">지역별 매출 순위 (실결제 기준)</div>
+      <ul class="region-list">
+        <li class="region-item">
+          <span class="region-rank top">1</span>
+          <span class="region-name">서울</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:100%"></div></div>
+          <span class="region-amount">1,607,494원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank top">2</span>
+          <span class="region-name">경기</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:16%"></div></div>
+          <span class="region-amount">258,800원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank top">3</span>
+          <span class="region-name">경북</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:7%"></div></div>
+          <span class="region-amount">115,900원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank">4</span>
+          <span class="region-name">인천</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:5%"></div></div>
+          <span class="region-amount">82,000원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank">5</span>
+          <span class="region-name">경남</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:1.2%"></div></div>
+          <span class="region-amount">19,800원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank">5</span>
+          <span class="region-name">전남</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:1.2%"></div></div>
+          <span class="region-amount">19,800원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank">7</span>
+          <span class="region-name">세종</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:0.6%"></div></div>
+          <span class="region-amount">9,900원</span>
+        </li>
+        <li class="region-item">
+          <span class="region-rank">7</span>
+          <span class="region-name">강원</span>
+          <div class="region-bar-wrap"><div class="region-bar" style="width:0.6%"></div></div>
+          <span class="region-amount">9,900원</span>
+        </li>
+      </ul>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;font-size:12px;color:#aaa">
+        서울 집중도 <strong style="color:#185FA5">75.7%</strong> · 수도권(서울+경기+인천) <strong style="color:#185FA5">90.9%</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discount bar chart -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-title">판매처별 할인율 비교</div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="discountChart" role="img" aria-label="판매처별 할인율 바 차트"></canvas>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="insight-grid">
+    <div class="insight-card blue">
+      <div class="insight-title">채널 효율</div>
+      <div class="insight-text"><strong>공식몰</strong>이 수수료 3.5%로 가장 효율적. 실결제 매출 1위이자 공헌이익 1위(912,691원).</div>
+    </div>
+    <div class="insight-card green">
+      <div class="insight-title">지역 집중도</div>
+      <div class="insight-text">수도권(서울·경기·인천) 집중도 <strong>90.9%</strong>. 서울만 75.7%로 압도적 1위.</div>
+    </div>
+    <div class="insight-card red">
+      <div class="insight-title">주의 채널</div>
+      <div class="insight-text"><strong>퓨처테리어</strong> 할인율 32.3% — 케이블 17,900원을 9,900원 판매 중. 가격 정책 검토 필요.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>LLS Sales Dashboard · 데이터 기준일 2026.06.29</footer>
+
+<script>
+  // Donut chart
+  new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['공식몰','29CM','보블릭','퓨처테리어'],
+      datasets: [{
+        data: [945794, 671900, 294000, 211900],
+        backgroundColor: ['#185FA5','#1D9E75','#D85A30','#888780'],
+        borderWidth: 3,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString() + '원'
+          }
+        }
+      }
+    }
+  });
+
+  // Stacked bar
+  new Chart(document.getElementById('stackBar'), {
+    type: 'bar',
+    data: {
+      labels: ['공식몰','29CM','보블릭','퓨처테리어'],
+      datasets: [
+        {
+          label: '공헌이익',
+          data: [912691, 503925, 226380, 180115],
+          backgroundColor: '#1D9E75',
+          borderRadius: 4
+        },
+        {
+          label: '마케팅비용',
+          data: [33103, 167975, 67620, 31785],
+          backgroundColor: '#f09595',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { stacked: true, ticks: { font: { size: 11 } }, grid: { display: false } },
+        y: { stacked: true, ticks: { font: { size: 11 }, callback: v => (v/10000) + '만' }, grid: { color: '#f4f4f4' } }
+      }
+    }
+  });
+
+  // Discount bar
+  new Chart(document.getElementById('discountChart'), {
+    type: 'bar',
+    data: {
+      labels: ['29CM','공식몰','보블릭','퓨처테리어'],
+      datasets: [{
+        data: [0.0, 1.2, 0.0, 32.3],
+        backgroundColor: ['#1D9E75','#185FA5','#D85A30','#E24B4A'],
+        borderRadius: 6,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ' 할인율: ' + ctx.parsed.y + '%' } }
+      },
+      scales: {
+        x: { ticks: { font: { size: 12 } }, grid: { display: false } },
+        y: { ticks: { font: { size: 11 }, callback: v => v + '%' }, grid: { color: '#f4f4f4' }, max: 40 }
+      }
+    }
+  });
+</script>
+</body>
+</html>
