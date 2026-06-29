@@ -325,6 +325,14 @@
             <div class="stat-box-sub" style="color:#FCD34D" id="sbCostSub">매입 원가 합계</div>
           </div>
         </div>
+        <div class="stat-box" style="background:#F0F4FF">
+          <div class="stat-box-icon" style="background:#E0E7FF">🚚</div>
+          <div class="stat-box-body">
+            <div class="stat-box-label" style="color:#3730A3">택배비</div>
+            <div class="stat-box-value" style="color:#3730A3" id="sbShip">–</div>
+            <div class="stat-box-sub" style="color:#818CF8" id="sbShipSub">건당 3,500원</div>
+          </div>
+        </div>
       </div>
       <canvas id="stackBar" style="display:none"></canvas>
     </div>
@@ -583,6 +591,7 @@ function fmtM(n) { return n >= 10000 ? (n/10000).toFixed(1)+'만' : fmt(n); }
 function compute(orders) {
   const ch = {}, reg = {};
   let tList=0, tPaid=0, tFee=0, tCost=0;
+  const shipKeys = new Set();
   orders.forEach(o => {
     const list = (PRICES[o.code] || o.paid/o.qty) * o.qty;
     const cost = (COSTS[o.code] || 0) * o.qty;
@@ -592,8 +601,10 @@ function compute(orders) {
     ch[o.ch].listRev += list; ch[o.ch].paidRev += o.paid; ch[o.ch].fee += fee; ch[o.ch].cost += cost;
     const r = normalizeRegion(o.addr);
     reg[r] = (reg[r] || 0) + o.paid;
+    shipKeys.add(o.date + '|' + o.addr);
   });
-  return { ch, reg, tList, tPaid, tFee, tCost, tContrib: tPaid - tFee - tCost };
+  const tShip = shipKeys.size * 3500;
+  return { ch, reg, tList, tPaid, tFee, tCost, tShip, tContrib: tPaid - tFee - tCost - tShip };
 }
 
 function updateKPIs(d) {
@@ -661,6 +672,9 @@ function updateStackBar(d) {
   document.getElementById('sbFeeSub').textContent = '수수료율 '+feeRate+'%';
   document.getElementById('sbCost').textContent = fmt(d.tCost)+'원';
   document.getElementById('sbCostSub').textContent = '원가율 '+costRate+'%';
+  const shipCnt = Math.round(d.tShip / 3500);
+  document.getElementById('sbShip').textContent = fmt(d.tShip)+'원';
+  document.getElementById('sbShipSub').textContent = `${shipCnt}건 × 3,500원`;
 }
 
 function updateRankTable(d) {
