@@ -678,7 +678,7 @@ function updateRankTable(d) {
           <span class="ch-rank" style="background:${b.bg};color:${b.c}">${i+1}</span>
           <div>
             <div class="ch-name-text">${ch}</div>
-            <div class="ch-sub-text">수수료 ${(FEES[ch]*100)}%</div>
+            <div class="ch-sub-text">수수료 ${parseFloat((FEES[ch]*100).toFixed(2))}%</div>
           </div>
         </div>
       </td>
