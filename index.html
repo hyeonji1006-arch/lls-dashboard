@@ -402,6 +402,13 @@
   </div>
 </div>
 
+<!-- 시딩 섹션 -->
+<div class="main" style="padding-top:0">
+  <div class="review-section-title">🎁 시딩 현황</div>
+  <div class="review-section-sub">인플루언서 · 협찬 발송 내역</div>
+  <div id="seedingCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1rem"></div>
+</div>
+
 <!-- 리뷰 섹션 -->
 <div class="main" style="padding-top:0">
   <div class="review-section-title">💬 고객 리뷰 분석</div>
@@ -461,10 +468,10 @@
 </div>
 
 <script>
-const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900 };
-const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40 };
-const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444' };
+const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900, LLS_PKG_BK:115900,LLS_PKG_OR:115900,LLS_PKG_GR:115900,LLS_PKG_BL:115900 };
+const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290, LLS_PKG_BK:54890,LLS_PKG_OR:54890,LLS_PKG_GR:54890,LLS_PKG_BL:54890 };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0 };
+const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
@@ -508,6 +515,37 @@ const ORDERS = [
   {ch:'콘란샵',code:'LLS_3_OR01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
   {ch:'콘란샵',code:'LLS_3_GR01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
   {ch:'콘란샵',code:'LLS_3_BL01', paid:2370000, qty:30, date:'2026-06-17', addr:'경기도 이천시 프리미엄아울렛로 113-60, 2층 더 콘란샵 창고'},
+  // 0630 CJ 주문
+  {ch:'29CM',    code:'LLS_ctoc_GR', paid:17900,  qty:1, date:'2026-06-30', addr:'경기 광주시 곤지암읍 부항길 47 1층'},
+  {ch:'29CM',    code:'LLS_ctoc_OR', paid:17900,  qty:1, date:'2026-06-30', addr:'경기 광주시 곤지암읍 부항길 47 1층'},
+  {ch:'29CM',    code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-29', addr:'전남 목포시 산정로134번길 42 빛가람'},
+  {ch:'공식몰',  code:'LLS_PKG_BK',  paid:99094,  qty:1, date:'2026-06-30', addr:'부산 남구 유엔로 246 (대연동, 대연자이) 108동 1903호'},
+  {ch:'공식몰',  code:'LLS_3_BK_3M', paid:155800, qty:2, date:'2026-06-29', addr:'경기 용인시 기흥구 동백8로 103 (동백동, 백현마을주공7단지아파트) 2706동1602호'},
+  {ch:'공식몰',  code:'LLS_PKG_BK',  paid:231800, qty:2, date:'2026-06-29', addr:'서울특별시 영등포구 국제금융로 39 (여의도동, 브라이튼 여의도) 101동 2305호'},
+  {ch:'공식몰',  code:'LLS_PKG_OR',  paid:115900, qty:1, date:'2026-06-29', addr:'서울특별시 강남구 삼성로 14 (개포동, 개포자이프레지던스) 421동 2801호'},
+  {ch:'퓨처테리어',code:'LLS_3_BK01',paid:75050,  qty:1, date:'2026-06-29', addr:'경기 과천시 과천대로7길 74 메가존산학연센터B동 터틀날리지 5층'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BL',paid:9900,  qty:1, date:'2026-06-29', addr:'경기 수원시 영통구 에듀타운로106번길 16 하이니티교육연구시설802호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR',paid:9900,  qty:1, date:'2026-06-29', addr:'경기 수원시 영통구 에듀타운로106번길 16 하이니티교육연구시설802호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_OR',paid:9900,  qty:1, date:'2026-06-29', addr:'경기 수원시 영통구 에듀타운로106번길 16 하이니티교육연구시설802호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK',paid:19800, qty:2, date:'2026-06-29', addr:'경기 수원시 영통구 에듀타운로106번길 16 하이니티교육연구시설802호'},
+  {ch:'컬렉션B', code:'LLS_ctoc_BK',  paid:12530, qty:1, date:'2026-06-30', addr:'서울특별시 송파구 올림픽로35길 104(신천동, 장미아파트) 15동 411호'},
+  {ch:'컬렉션B', code:'LLS_ctoc_BL',  paid:12530, qty:1, date:'2026-06-30', addr:'서울특별시 송파구 올림픽로35길 104(신천동, 장미아파트) 15동 411호'},
+  {ch:'컬렉션B', code:'LLS_C_GR01',   paid:88200, qty:1, date:'2026-06-30', addr:'경기도 성남시 분당구 동판교로 123(백현동, 백현마을1단지판교푸르지오그랑블아파트) 105동 701호'},
+  {ch:'컬렉션B', code:'LLS_C_BK01',   paid:88200, qty:1, date:'2026-06-29', addr:'서울특별시 강남구 삼성로 517(삼성동, 채널리저브) 101동 1001호'},
+  {ch:'컬렉션B', code:'LLS_ctoc_GR',  paid:12530, qty:1, date:'2026-06-29', addr:'부산광역시 해운대구 마린시티1로 147(우동) 서관 3101호'},
+];
+
+const SEEDING = [
+  { id:'SD2026063001', name:'양대성', date:'2026-06-30', items:[
+      { code:'LLS_C_BK01', product:'EXTENSION USB-C SOCKET / YIN-YANG BLACK 1.5m', qty:1 }
+  ]},
+  { id:'SD2026063002', name:'신원식', date:'2026-06-30', items:[
+      { code:'LLS_C_BK01', product:'EXTENSION USB-C SOCKET / YIN-YANG BLACK 1.5m', qty:1 }
+  ]},
+  { id:'SD2026063003', name:'박은진', date:'2026-06-30', items:[
+      { code:'LLS_C_BK01',   product:'EXTENSION USB-C SOCKET / YIN-YANG BLACK 1.5m', qty:1 },
+      { code:'LLS_ctoc_BK', product:'ROPE STRAP CABLE CtoC(60w) / YIN-YANG BLACK', qty:1 }
+  ]},
 ];
 
 function normalizeRegion(addr) {
@@ -646,7 +684,7 @@ function updateKPIs(d) {
 }
 
 function updateDonut(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B'];
   const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -750,7 +788,7 @@ function updateRegion(d) {
 }
 
 function updateDiscount(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B'];
   const discs = chs.map(c => {
     const v = d.ch[c];
     if (!v||v.listRev===0) return 0;
@@ -1017,8 +1055,47 @@ function renderKeywordBubbles() {
   }).join('');
 }
 
+function renderSeeding() {
+  const PRODUCT_SHORT = {
+    'LLS_C_BK01':'USB-C SOCKET / BLACK', 'LLS_C_OR01':'USB-C SOCKET / ORANGE',
+    'LLS_C_GR01':'USB-C SOCKET / GREEN',  'LLS_C_BL01':'USB-C SOCKET / BLUE',
+    'LLS_3_BK01':'3-SOCKET / BLACK',      'LLS_3_OR01':'3-SOCKET / ORANGE',
+    'LLS_3_GR01':'3-SOCKET / GREEN',      'LLS_3_BL01':'3-SOCKET / BLUE',
+    'LLS_ctoc_BK':'CtoC CABLE / BLACK',   'LLS_ctoc_OR':'CtoC CABLE / ORANGE',
+    'LLS_ctoc_GR':'CtoC CABLE / GREEN',   'LLS_ctoc_BL':'CtoC CABLE / BLUE',
+    'LLS_PKG_BK':'SOCKET+CABLE PKG / BLACK',
+  };
+  const totalItems = SEEDING.reduce((s,p) => s + p.items.reduce((a,i) => a+i.qty, 0), 0);
+  document.getElementById('seedingCards').innerHTML =
+    `<div style="grid-column:1/-1;display:flex;align-items:center;gap:1.5rem;padding:1rem 1.5rem;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(80,80,200,0.06);margin-bottom:.25rem">
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#4F6EF7">${SEEDING.length}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">시딩 인원</div></div>
+      <div style="width:1px;height:40px;background:#F0F0F8"></div>
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#22C55E">${totalItems}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">발송 수량</div></div>
+      <div style="width:1px;height:40px;background:#F0F0F8"></div>
+      <div style="font-size:13px;color:#1C1C2E;font-weight:500">${SEEDING.map(p=>`<strong>${p.name}</strong>`).join(' · ')}</div>
+    </div>` +
+    SEEDING.map(p => `
+      <div style="background:#fff;border-radius:16px;padding:1.25rem 1.5rem;box-shadow:0 2px 12px rgba(80,80,200,0.06)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#4F6EF7,#818CF8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px">🎁</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:#1C1C2E">${p.name}</div>
+            <div style="font-size:11px;color:#8B8BA7">${p.id} · ${p.date}</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${p.items.map(it => `
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#F8F8FC;border-radius:8px;padding:7px 12px">
+              <span style="font-size:12px;color:#1C1C2E;font-weight:500">${PRODUCT_SHORT[it.code]||it.product}</span>
+              <span style="font-size:12px;font-weight:700;color:#4F6EF7;background:#EEF1FE;padding:2px 8px;border-radius:6px">×${it.qty}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+}
+
 buildDropdowns();
 updateAll();
+renderSeeding();
 renderReviews();
 renderKeywordBubbles();
 </script>
