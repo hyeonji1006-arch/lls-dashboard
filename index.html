@@ -406,6 +406,7 @@
 <div class="main" style="padding-top:0">
   <div class="review-section-title">🎁 시딩 현황</div>
   <div class="review-section-sub">인플루언서 · 협찬 발송 내역</div>
+  <div class="review-ch-tabs" id="seedingMonthTabs"></div>
   <div id="seedingCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1rem"></div>
 </div>
 
@@ -1055,26 +1056,50 @@ function renderKeywordBubbles() {
   }).join('');
 }
 
+const PRODUCT_SHORT = {
+  'LLS_C_BK01':'USB-C SOCKET / BLACK', 'LLS_C_OR01':'USB-C SOCKET / ORANGE',
+  'LLS_C_GR01':'USB-C SOCKET / GREEN',  'LLS_C_BL01':'USB-C SOCKET / BLUE',
+  'LLS_3_BK01':'3-SOCKET / BLACK',      'LLS_3_OR01':'3-SOCKET / ORANGE',
+  'LLS_3_GR01':'3-SOCKET / GREEN',      'LLS_3_BL01':'3-SOCKET / BLUE',
+  'LLS_ctoc_BK':'CtoC CABLE / BLACK',   'LLS_ctoc_OR':'CtoC CABLE / ORANGE',
+  'LLS_ctoc_GR':'CtoC CABLE / GREEN',   'LLS_ctoc_BL':'CtoC CABLE / BLUE',
+  'LLS_PKG_BK':'SOCKET+CABLE PKG / BLACK', 'LLS_PKG_OR':'SOCKET+CABLE PKG / ORANGE',
+};
+
+let selectedSeedingMonth = '전체';
+
+function buildSeedingTabs() {
+  const months = ['전체', ...new Set(SEEDING.map(p => p.date.slice(0,7)))].sort();
+  document.getElementById('seedingMonthTabs').innerHTML = months.map(m => {
+    const label = m === '전체' ? '전체' : parseInt(m.split('-')[1]) + '월';
+    return `<button class="review-ch-tab${m===selectedSeedingMonth?' active':''}" onclick="selectSeedingMonth('${m}')">${label}</button>`;
+  }).join('');
+}
+
+function selectSeedingMonth(m) {
+  selectedSeedingMonth = m;
+  buildSeedingTabs();
+  renderSeeding();
+}
+
 function renderSeeding() {
-  const PRODUCT_SHORT = {
-    'LLS_C_BK01':'USB-C SOCKET / BLACK', 'LLS_C_OR01':'USB-C SOCKET / ORANGE',
-    'LLS_C_GR01':'USB-C SOCKET / GREEN',  'LLS_C_BL01':'USB-C SOCKET / BLUE',
-    'LLS_3_BK01':'3-SOCKET / BLACK',      'LLS_3_OR01':'3-SOCKET / ORANGE',
-    'LLS_3_GR01':'3-SOCKET / GREEN',      'LLS_3_BL01':'3-SOCKET / BLUE',
-    'LLS_ctoc_BK':'CtoC CABLE / BLACK',   'LLS_ctoc_OR':'CtoC CABLE / ORANGE',
-    'LLS_ctoc_GR':'CtoC CABLE / GREEN',   'LLS_ctoc_BL':'CtoC CABLE / BLUE',
-    'LLS_PKG_BK':'SOCKET+CABLE PKG / BLACK',
-  };
-  const totalItems = SEEDING.reduce((s,p) => s + p.items.reduce((a,i) => a+i.qty, 0), 0);
+  const filtered = selectedSeedingMonth === '전체'
+    ? SEEDING
+    : SEEDING.filter(p => p.date.startsWith(selectedSeedingMonth));
+  const totalItems = filtered.reduce((s,p) => s + p.items.reduce((a,i) => a+i.qty, 0), 0);
+  if (filtered.length === 0) {
+    document.getElementById('seedingCards').innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:#8B8BA7;font-size:13px">해당 월 시딩 내역이 없습니다</div>`;
+    return;
+  }
   document.getElementById('seedingCards').innerHTML =
     `<div style="grid-column:1/-1;display:flex;align-items:center;gap:1.5rem;padding:1rem 1.5rem;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(80,80,200,0.06);margin-bottom:.25rem">
-      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#4F6EF7">${SEEDING.length}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">시딩 인원</div></div>
+      <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#4F6EF7">${filtered.length}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">시딩 인원</div></div>
       <div style="width:1px;height:40px;background:#F0F0F8"></div>
       <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#22C55E">${totalItems}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">발송 수량</div></div>
       <div style="width:1px;height:40px;background:#F0F0F8"></div>
-      <div style="font-size:13px;color:#1C1C2E;font-weight:500">${SEEDING.map(p=>`<strong>${p.name}</strong>`).join(' · ')}</div>
+      <div style="font-size:13px;color:#1C1C2E;font-weight:500">${filtered.map(p=>`<strong>${p.name}</strong>`).join(' · ')}</div>
     </div>` +
-    SEEDING.map(p => `
+    filtered.map(p => `
       <div style="background:#fff;border-radius:16px;padding:1.25rem 1.5rem;box-shadow:0 2px 12px rgba(80,80,200,0.06)">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem">
           <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#4F6EF7,#818CF8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px">🎁</div>
@@ -1086,7 +1111,7 @@ function renderSeeding() {
         <div style="display:flex;flex-direction:column;gap:6px">
           ${p.items.map(it => `
             <div style="display:flex;align-items:center;justify-content:space-between;background:#F8F8FC;border-radius:8px;padding:7px 12px">
-              <span style="font-size:12px;color:#1C1C2E;font-weight:500">${PRODUCT_SHORT[it.code]||it.product}</span>
+              <span style="font-size:12px;color:#1C1C2E;font-weight:500">${PRODUCT_SHORT[it.code]||it.code}</span>
               <span style="font-size:12px;font-weight:700;color:#4F6EF7;background:#EEF1FE;padding:2px 8px;border-radius:6px">×${it.qty}</span>
             </div>`).join('')}
         </div>
@@ -1095,6 +1120,7 @@ function renderSeeding() {
 
 buildDropdowns();
 updateAll();
+buildSeedingTabs();
 renderSeeding();
 renderReviews();
 renderKeywordBubbles();
