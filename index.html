@@ -471,7 +471,7 @@
 <script>
 const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900, LLS_PKG_BK:115900,LLS_PKG_OR:115900,LLS_PKG_GR:115900,LLS_PKG_BL:115900 };
 const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290, LLS_PKG_BK:54890,LLS_PKG_OR:54890,LLS_PKG_GR:54890,LLS_PKG_BL:54890 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0,'오늘의집':0 };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20 };
 const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
@@ -1109,6 +1109,7 @@ function renderSeeding() {
     ? SEEDING
     : SEEDING.filter(p => p.date.startsWith(selectedSeedingMonth));
   const totalItems = filtered.reduce((s,p) => s + p.items.reduce((a,i) => a+i.qty, 0), 0);
+  const totalCost  = filtered.reduce((s,p) => s + p.items.reduce((a,i) => a + (COSTS[i.code]||0)*i.qty, 0), 0);
   if (filtered.length === 0) {
     document.getElementById('seedingCards').innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:#8B8BA7;font-size:13px">해당 월 시딩 내역이 없습니다</div>`;
     return;
@@ -1118,6 +1119,8 @@ function renderSeeding() {
       <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#4F6EF7">${filtered.length}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">시딩 인원</div></div>
       <div style="width:1px;height:40px;background:#F0F0F8"></div>
       <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#22C55E">${totalItems}</div><div style="font-size:11px;color:#8B8BA7;font-weight:600">발송 수량</div></div>
+      <div style="width:1px;height:40px;background:#F0F0F8"></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#B45309">${fmt(totalCost)}<span style="font-size:13px">원</span></div><div style="font-size:11px;color:#8B8BA7;font-weight:600">원가 합계</div></div>
       <div style="width:1px;height:40px;background:#F0F0F8"></div>
       <div style="font-size:13px;color:#1C1C2E;font-weight:500">${filtered.map(p=>`<strong>${p.name}</strong>`).join(' · ')}</div>
     </div>` +
