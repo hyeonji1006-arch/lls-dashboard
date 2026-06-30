@@ -471,8 +471,8 @@
 <script>
 const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900, LLS_PKG_BK:115900,LLS_PKG_OR:115900,LLS_PKG_GR:115900,LLS_PKG_BL:115900 };
 const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290, LLS_PKG_BK:54890,LLS_PKG_OR:54890,LLS_PKG_GR:54890,LLS_PKG_BL:54890 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035 };
-const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A' };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035,'EQL':0,'SSF':0 };
+const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A','EQL':'#8B5CF6','SSF':'#F97316' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
@@ -534,6 +534,17 @@ const ORDERS = [
   {ch:'컬렉션B', code:'LLS_C_GR01',   paid:88200, qty:1, date:'2026-06-30', addr:'경기도 성남시 분당구 동판교로 123(백현동, 백현마을1단지판교푸르지오그랑블아파트) 105동 701호'},
   {ch:'컬렉션B', code:'LLS_C_BK01',   paid:88200, qty:1, date:'2026-06-29', addr:'서울특별시 강남구 삼성로 517(삼성동, 채널리저브) 101동 1001호'},
   {ch:'컬렉션B', code:'LLS_ctoc_GR',  paid:12530, qty:1, date:'2026-06-29', addr:'부산광역시 해운대구 마린시티1로 147(우동) 서관 3101호'},
+  // 0616 CJ 주문
+  {ch:'공식몰',  code:'LLS_C_BK01',  paid:98000, qty:1, date:'2026-06-15', addr:'부산광역시 남구 분포로 111 용호동 엘지메트로시티 117동 302호'},
+  {ch:'공식몰',  code:'LLS_3_BK01',  paid:79000, qty:1, date:'2026-06-15', addr:'경기도 용인시 처인구 백암면 죽양대로 956-38 파트너아이디'},
+  {ch:'29CM',    code:'LLS_C_BK01',  paid:98000, qty:1, date:'2026-06-16', addr:'서울특별시 송파구 송파대로 345 409동 302호'},
+  {ch:'29CM',    code:'LLS_3_BK_3M', paid:82000, qty:1, date:'2026-06-15', addr:'서울 중구 다산로46길 17 east 2401호'},
+  {ch:'29CM',    code:'LLS_3_BK_3M', paid:82000, qty:1, date:'2026-06-15', addr:'서울 광진구 아차산로42길 41-14 서진하우스 301호'},
+  {ch:'29CM',    code:'LLS_3_BL01',  paid:79000, qty:1, date:'2026-06-15', addr:'서울특별시 송파구 올림픽로 135 224동 2103호'},
+  {ch:'오늘의집',code:'LLS_3_OR01',  paid:79000, qty:1, date:'2026-06-15', addr:'서울 동대문구 정릉천동로 36 용두동 래미안허브리츠 101동 1408호'},
+  {ch:'EQL',     code:'LLS_3_BK01',  paid:79000, qty:1, date:'2026-06-15', addr:'서울특별시 광진구 아차산로78길 33 광장동 주성아우라오피스텔 106호'},
+  {ch:'SSF',     code:'LLS_ctoc_GR', paid:35800, qty:2, date:'2026-06-15', addr:'경기도 평택시 고덕중앙로 200-10 고덕동 2709호'},
+  {ch:'컬렉션B', code:'LLS_3_BK01',  paid:79000, qty:1, date:'2026-06-15', addr:'인천광역시 연수구 송도과학로27번길 55 송도동 롯데캐슬 캠퍼스타운 101동 506호'},
   // 네이버 0629
   {ch:'네이버', code:'LLS_3_GR01', paid:79000, qty:1, date:'2026-06-29', addr:'강원특별자치도 춘천시 지석로 67 석사동 현진에버빌2차 213동 303호'},
   {ch:'네이버', code:'LLS_3_GR01', paid:79000, qty:1, date:'2026-06-29', addr:'서울특별시 마포구 토정로 127-5 상수동 아름다운공간 504호'},
@@ -709,7 +720,7 @@ function updateKPIs(d) {
 }
 
 function updateDonut(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF'];
   const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -813,7 +824,7 @@ function updateRegion(d) {
 }
 
 function updateDiscount(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF'];
   const discs = chs.map(c => {
     const v = d.ch[c];
     if (!v||v.listRev===0) return 0;
