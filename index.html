@@ -169,6 +169,26 @@
 
     footer { text-align:center; font-size:11px; color:var(--text-sub); padding:2rem; }
 
+    /* ── Best Section ── */
+    .best-grid { display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:1.5rem; }
+    @media(max-width:900px){ .best-grid { grid-template-columns:1fr; } }
+    .best-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .best-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border-radius:12px; }
+    .best-rank { width:26px; height:26px; border-radius:8px; background:var(--primary); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .best-rank.r2 { background:#A5C4F7; }
+    .best-rank.r3 { background:#C4B5FD; }
+    .best-rank.r4,.best-rank.r5 { background:var(--border); color:var(--text-sub); }
+    .best-name { flex:1; font-size:13px; font-weight:600; color:var(--text); }
+    .best-sub  { font-size:11px; color:var(--text-sub); margin-top:2px; }
+    .best-qty  { font-size:15px; font-weight:800; color:var(--primary); white-space:nowrap; }
+    .best-bar-wrap { height:5px; background:var(--border); border-radius:3px; margin-top:4px; }
+    .best-bar  { height:5px; border-radius:3px; background:linear-gradient(90deg,var(--primary),#A5C4F7); transition:width 0.4s; }
+    .day-item  { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border-radius:12px; }
+    .day-rank  { width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+    .day-name  { flex:1; font-size:13px; font-weight:600; color:var(--text); }
+    .day-sub   { font-size:11px; color:var(--text-sub); margin-top:2px; }
+    .day-amt   { font-size:14px; font-weight:800; color:var(--green); white-space:nowrap; }
+
     /* ── Reviews ── */
     .review-section-title { font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:10px; }
     .review-section-sub { font-size:13px; color:var(--text-sub); margin-bottom:1.25rem; }
@@ -273,6 +293,24 @@
       <div class="kpi-label">공헌이익</div>
       <div class="kpi-value" style="color:var(--green)" id="kpi5">–<span class="unit">원</span></div>
       <div id="kpi5s"></div>
+    </div>
+  </div>
+
+  <!-- ── Best Products & Top Days ── -->
+  <div class="best-grid">
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-text"><span class="card-title-dot" style="background:#F59E0B"></span>베스트 5 제품</div>
+        <span style="font-size:11px;font-weight:500;color:var(--text-sub)">수량 기준</span>
+      </div>
+      <ul class="best-list" id="bestProducts"></ul>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="card-title-text"><span class="card-title-dot" style="background:#22C55E"></span>판매 TOP 3 날짜</div>
+        <span style="font-size:11px;font-weight:500;color:var(--text-sub)">매출 기준</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="bestDays"></div>
     </div>
   </div>
 
@@ -844,14 +882,60 @@ function updateDiscount(d) {
   });
 }
 
+const PROD_NAMES = {
+  LLS_C_BK01:'소켓 1.5m · 블랙',  LLS_C_OR01:'소켓 1.5m · 오렌지', LLS_C_GR01:'소켓 1.5m · 그린',  LLS_C_BL01:'소켓 1.5m · 블루',
+  LLS_3_BK01:'소켓 3m · 블랙',    LLS_3_OR01:'소켓 3m · 오렌지',   LLS_3_GR01:'소켓 3m · 그린',    LLS_3_BL01:'소켓 3m · 블루',
+  LLS_3_BK_3M:'소켓 3m · 블랙(3M)',
+  LLS_ctoc_BK:'케이블 · 블랙',    LLS_ctoc_OR:'케이블 · 오렌지',   LLS_ctoc_GR:'케이블 · 그린',    LLS_ctoc_BL:'케이블 · 블루',
+  LLS_PKG_BK:'PKG · 블랙',        LLS_PKG_OR:'PKG · 오렌지',       LLS_PKG_GR:'PKG · 그린',        LLS_PKG_BL:'PKG · 블루'
+};
+
+function renderBest(orders) {
+  // Best 5 products by qty
+  const qtyMap = {};
+  orders.forEach(o => { qtyMap[o.code] = (qtyMap[o.code]||0) + o.qty; });
+  const sorted = Object.entries(qtyMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxQty = sorted[0]?.[1] || 1;
+  const rankColors = ['','r2','r3','r4','r5'];
+  document.getElementById('bestProducts').innerHTML = sorted.map(([code,qty],i)=>`
+    <li class="best-item">
+      <div class="best-rank ${rankColors[i]}">${i+1}</div>
+      <div style="flex:1;min-width:0">
+        <div class="best-name">${PROD_NAMES[code]||code}</div>
+        <div class="best-bar-wrap"><div class="best-bar" style="width:${Math.round(qty/maxQty*100)}%"></div></div>
+      </div>
+      <div class="best-qty">${qty.toLocaleString()}개</div>
+    </li>`).join('');
+
+  // Top 3 days by paid revenue
+  const dayMap = {};
+  orders.forEach(o => { dayMap[o.date] = (dayMap[o.date]||0) + o.paid; });
+  const dayEmoji = ['🥇','🥈','🥉'];
+  const topDays = Object.entries(dayMap).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  document.getElementById('bestDays').innerHTML = topDays.map(([date,amt],i)=>{
+    const d = new Date(date);
+    const dow = ['일','월','화','수','목','금','토'][d.getDay()];
+    return `<div class="day-item">
+      <div class="day-rank">${dayEmoji[i]}</div>
+      <div style="flex:1">
+        <div class="day-name">${date} (${dow})</div>
+        <div class="day-sub">매출 ${orders.filter(o=>o.date===date).reduce((s,o)=>s+o.qty,0)}개 판매</div>
+      </div>
+      <div class="day-amt">${fmt(amt)}원</div>
+    </div>`;
+  }).join('');
+}
+
 function updateAll() {
-  const data = compute(getFiltered());
+  const filtered = getFiltered();
+  const data = compute(filtered);
   updateKPIs(data);
   updateDonut(data);
   updateStackBar(data);
   updateRankTable(data);
   updateRegion(data);
   updateDiscount(data);
+  renderBest(filtered);
 }
 
 function openRegionModal(region) {
