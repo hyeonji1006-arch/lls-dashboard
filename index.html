@@ -509,8 +509,8 @@
 <script>
 const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900, LLS_PKG_BK:115900,LLS_PKG_OR:115900,LLS_PKG_GR:115900,LLS_PKG_BL:115900 };
 const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290, LLS_PKG_BK:54890,LLS_PKG_OR:54890,LLS_PKG_GR:54890,LLS_PKG_BL:54890 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035,'EQL':0.18,'SSF':0.20,'무신사':0.25 };
-const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A','EQL':'#8B5CF6','SSF':'#F97316','무신사':'#FF3040' };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035,'EQL':0.18,'SSF':0.20,'무신사':0.25,'루밍':0.40 };
+const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A','EQL':'#8B5CF6','SSF':'#F97316','무신사':'#FF3040','루밍':'#10B981' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
@@ -619,6 +619,12 @@ const ORDERS = [
   {ch:'오늘의집',  code:'LLS_3_OR01',  paid:79000,  qty:1, date:'2026-06-30', addr:'경기 광주시 오포읍 창뜰윗길6번길 12-3 (능평리) 능평203C동 101호'},
   {ch:'오늘의집',  code:'LLS_PKG_GR',  paid:115900, qty:1, date:'2026-06-30', addr:'광주광역시 동구 동명동 245-16동명센트럴파크 1동 1809호'},
   {ch:'EQL',       code:'LLS_3_GR01',  paid:79000,  qty:1, date:'2026-07-01', addr:'광주광역시 광산구 월계로 109 (월계동, 첨단산업기지 라인2차아파트) 206-103'},
+  // 0615 루밍
+  {ch:'루밍', code:'LLS_C_BL01', paid:588000, qty:6, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
+  {ch:'루밍', code:'LLS_3_OR01', paid:553000, qty:7, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
+  {ch:'루밍', code:'LLS_3_GR01', paid:158000, qty:2, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
+  {ch:'루밍', code:'LLS_3_BL01', paid:395000, qty:5, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
+  {ch:'루밍', code:'LLS_3_BK01', paid:395000, qty:5, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
   // 네이버 0630 스마트스토어
   {ch:'네이버', code:'LLS_ctoc_BL', paid:35800, qty:2, date:'2026-06-30', addr:'서울특별시 강서구 마곡동로 110 (마곡동, 코오롱one&only타워) 2층 CMF팀'},
   {ch:'네이버', code:'LLS_3_BK_3M', paid:82000, qty:1, date:'2026-06-30', addr:'경기도 용인시 기흥구 어정로 62-7 (상하동, 갈천마을신일유토빌아파트) 101동 602호'},
@@ -788,7 +794,7 @@ function updateKPIs(d) {
 }
 
 function updateDonut(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사','루밍'];
   const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -892,7 +898,7 @@ function updateRegion(d) {
 }
 
 function updateDiscount(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사','루밍'];
   const discs = chs.map(c => {
     const v = d.ch[c];
     if (!v||v.listRev===0) return 0;
@@ -943,7 +949,7 @@ function renderBest(orders) {
 
   // Hour stats — computed from all Excel files (static, not filter-dependent)
   const HOUR_STATS = [
-    {h:0,cnt:1},{h:1,cnt:4},{h:2,cnt:3},{h:4,cnt:2},{h:5,cnt:1},
+    {h:0,cnt:1},{h:1,cnt:4},{h:2,cnt:3},{h:4,cnt:2},{h:5,cnt:2},
     {h:6,cnt:1},{h:7,cnt:2},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:4},
     {h:11,cnt:3},{h:12,cnt:5},{h:13,cnt:1},{h:14,cnt:3},{h:15,cnt:3},
     {h:16,cnt:4},{h:17,cnt:6},{h:18,cnt:1},{h:19,cnt:2},{h:20,cnt:6},
