@@ -509,8 +509,8 @@
 <script>
 const PRICES = { LLS_C_BK01:98000,LLS_C_OR01:98000,LLS_C_GR01:98000,LLS_C_BL01:98000, LLS_3_BK01:79000,LLS_3_OR01:79000,LLS_3_GR01:79000,LLS_3_BL01:79000, LLS_3_BK_3M:82000, LLS_ctoc_BK:17900,LLS_ctoc_OR:17900,LLS_ctoc_GR:17900,LLS_ctoc_BL:17900, LLS_PKG_BK:115900,LLS_PKG_OR:115900,LLS_PKG_GR:115900,LLS_PKG_BL:115900 };
 const COSTS  = { LLS_C_BK01:50600,LLS_C_OR01:50600,LLS_C_GR01:50600,LLS_C_BL01:50600, LLS_3_BK01:37400,LLS_3_OR01:37400,LLS_3_GR01:37400,LLS_3_BL01:37400, LLS_3_BK_3M:38940, LLS_ctoc_BK:4290,LLS_ctoc_OR:4290,LLS_ctoc_GR:4290,LLS_ctoc_BL:4290, LLS_PKG_BK:54890,LLS_PKG_OR:54890,LLS_PKG_GR:54890,LLS_PKG_BL:54890 };
-const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035,'EQL':0.18,'SSF':0.20 };
-const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A','EQL':'#8B5CF6','SSF':'#F97316' };
+const FEES   = { '29CM':0.25,'공식몰':0.035,'보블릭':0.23,'퓨처테리어':0.15,'콘란샵':0.40,'컬렉션B':0,'언와인드':0.28,'오늘의집':0.20,'네이버':0.035,'EQL':0.18,'SSF':0.20,'무신사':0 };
+const CH_COLORS = { '공식몰':'#4F6EF7','29CM':'#22C55E','보블릭':'#F59E0B','퓨처테리어':'#A855F7','콘란샵':'#EF4444','컬렉션B':'#06B6D4','언와인드':'#EC4899','오늘의집':'#14B8A6','네이버':'#03C75A','EQL':'#8B5CF6','SSF':'#F97316','무신사':'#FF3040' };
 const DAYS = ['일','월','화','수','목','금','토'];
 
 const ORDERS = [
@@ -592,6 +592,33 @@ const ORDERS = [
   {ch:'오늘의집', code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-18', addr:'부산광역시 동래구 아시아드대로 229 온천동 메종나인 702호'},
   {ch:'공식몰',  code:'LLS_3_OR01',   paid:79000,  qty:1, date:'2026-06-18', addr:'경기도 부천시 원미구 도약로 81 상동 다정한마을 쌍용아파트 2123동 301호'},
   {ch:'공식몰',  code:'LLS_PKG_OR',   paid:115900, qty:1, date:'2026-06-17', addr:'경기도 용인시 기흥구 죽현로 12 보정동 죽현마을 동원로얄듀크 302동 302호'},
+  // 0701 CJ 주문
+  {ch:'무신사',    code:'LLS_C_OR01',  paid:98000,  qty:1, date:'2026-06-30', addr:'대구 수성구 범어로18길 22 (힐스테이트 범어) 101동 1601호'},
+  {ch:'공식몰',    code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-07-01', addr:'서울특별시 중구 다산로 64-2 (신당동) 선데이서비스'},
+  {ch:'공식몰',    code:'LLS_3_BK_3M', paid:82000,  qty:1, date:'2026-06-30', addr:'경기도 고양시 덕양구 성신로 77 (행신동, 햇빛마을18-1단지) 1811동 303호'},
+  {ch:'공식몰',    code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-30', addr:'부산광역시 부산진구 당감로 79 (부암동, 화승삼성아파트) 15동 905호'},
+  {ch:'공식몰',    code:'LLS_3_OR01',  paid:75050,  qty:1, date:'2026-06-30', addr:'경북 포항시 북구 새천년대로 1276 (양덕동, 힐스테이트 환호공원 2단지) 205동1601호'},
+  {ch:'공식몰',    code:'LLS_3_BK_3M', paid:82000,  qty:1, date:'2026-06-30', addr:'서울 도봉구 창동 715-38 혜성루첸리 502호'},
+  {ch:'공식몰',    code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-06-30', addr:'서울특별시 영등포구 경인로 883-2 (영등포동3가) 센트럴큐브스테이트 1406호'},
+  {ch:'29CM',      code:'LLS_ctoc_GR', paid:17900,  qty:1, date:'2026-07-01', addr:'인천광역시 중구 중산동 1887-4 e편한세상 영종국제도시 오션하임 111동1403호'},
+  {ch:'29CM',      code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-30', addr:'경북 안동시 북후면 도장길 339 교무실'},
+  {ch:'29CM',      code:'LLS_PKG_GR',  paid:115900, qty:1, date:'2026-06-30', addr:'대구 달서구 와룡로 186 101동 2905호'},
+  {ch:'29CM',      code:'LLS_3_BK01',  paid:79000,  qty:1, date:'2026-06-30', addr:'경남 창원시 의창구 사화로 363 롯데캐슬포레스트102동403호'},
+  {ch:'29CM',      code:'LLS_3_BK_3M', paid:82000,  qty:1, date:'2026-06-30', addr:'광주 남구 효천3로 110 204동 702호'},
+  {ch:'컬렉션B',   code:'LLS_ctoc_OR', paid:12530,  qty:1, date:'2026-07-01', addr:'서울특별시 용산구 한남대로 91 (한남동, 나인원 한남) 105동 301호'},
+  {ch:'컬렉션B',   code:'LLS_3_OR01',  paid:71100,  qty:1, date:'2026-07-01', addr:'서울특별시 용산구 한남대로 91 (한남동, 나인원 한남) 105동 301호'},
+  {ch:'컬렉션B',   code:'LLS_ctoc_BK', paid:12530,  qty:1, date:'2026-06-30', addr:'경기도 평택시 포승읍 황해희곡6로 36 (포승읍, 평택BIX 경기행복주택) 201동 503호'},
+  {ch:'퓨처테리어',code:'LLS_3_GR01',  paid:60700,  qty:1, date:'2026-06-30', addr:'서울 강동구 상암로 11 선사현대아파트116동 1805호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BL', paid:9900,   qty:1, date:'2026-06-30', addr:'인천 서구 청라루비로42번길 12301호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR', paid:29700,  qty:3, date:'2026-06-30', addr:'세종특별자치시 한누리대로 2154 세종특별자치시교육청 1층 민원실'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK', paid:19800,  qty:2, date:'2026-06-30', addr:'경기 과천시 과천대로1길 16 과천 포레하임110동 902호'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_OR', paid:9900,   qty:1, date:'2026-06-30', addr:'충남 공주시 정안면 가락골길 5-6 단독주택'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_GR', paid:9900,   qty:1, date:'2026-06-30', addr:'충남 공주시 정안면 가락골길 5-6 단독주택'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BL', paid:9900,   qty:1, date:'2026-06-30', addr:'충남 공주시 정안면 가락골길 5-6 단독주택'},
+  {ch:'퓨처테리어',code:'LLS_ctoc_BK', paid:37369,  qty:4, date:'2026-06-30', addr:'경기 용인시 수지구 상현로 101 상현마을수지센트럴아이파크105동 1801호'},
+  {ch:'오늘의집',  code:'LLS_3_OR01',  paid:79000,  qty:1, date:'2026-06-30', addr:'경기 광주시 오포읍 창뜰윗길6번길 12-3 (능평리) 능평203C동 101호'},
+  {ch:'오늘의집',  code:'LLS_PKG_GR',  paid:115900, qty:1, date:'2026-06-30', addr:'광주광역시 동구 동명동 245-16동명센트럴파크 1동 1809호'},
+  {ch:'EQL',       code:'LLS_3_GR01',  paid:79000,  qty:1, date:'2026-07-01', addr:'광주광역시 광산구 월계로 109 (월계동, 첨단산업기지 라인2차아파트) 206-103'},
 ];
 
 const SEEDING = [
@@ -758,7 +785,7 @@ function updateKPIs(d) {
 }
 
 function updateDonut(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사'];
   const vals = chs.map(c => Math.round(d.ch[c]?.paidRev || 0));
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -862,7 +889,7 @@ function updateRegion(d) {
 }
 
 function updateDiscount(d) {
-  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF'];
+  const chs = ['공식몰','29CM','보블릭','퓨처테리어','콘란샵','컬렉션B','언와인드','오늘의집','네이버','EQL','SSF','무신사'];
   const discs = chs.map(c => {
     const v = d.ch[c];
     if (!v||v.listRev===0) return 0;
@@ -913,10 +940,11 @@ function renderBest(orders) {
 
   // Hour stats — computed from all Excel files (static, not filter-dependent)
   const HOUR_STATS = [
-    {h:0,cnt:1},{h:1,cnt:3},{h:2,cnt:3},{h:4,cnt:2},{h:6,cnt:1},
-    {h:7,cnt:1},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:2},{h:11,cnt:1},
-    {h:12,cnt:4},{h:14,cnt:1},{h:15,cnt:3},{h:16,cnt:2},{h:17,cnt:5},
-    {h:19,cnt:2},{h:20,cnt:4},{h:21,cnt:9},{h:22,cnt:7},{h:23,cnt:5}
+    {h:0,cnt:1},{h:1,cnt:3},{h:2,cnt:3},{h:4,cnt:2},{h:5,cnt:1},
+    {h:6,cnt:1},{h:7,cnt:2},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:4},
+    {h:11,cnt:3},{h:12,cnt:5},{h:13,cnt:1},{h:14,cnt:2},{h:15,cnt:3},
+    {h:16,cnt:4},{h:17,cnt:6},{h:18,cnt:1},{h:19,cnt:2},{h:20,cnt:6},
+    {h:21,cnt:12},{h:22,cnt:10},{h:23,cnt:7}
   ];
   const maxCnt = Math.max(...HOUR_STATS.map(x=>x.cnt));
   const top3 = [...HOUR_STATS].sort((a,b)=>b.cnt-a.cnt).slice(0,3);
