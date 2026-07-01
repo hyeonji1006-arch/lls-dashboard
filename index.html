@@ -307,10 +307,10 @@
     </div>
     <div class="card">
       <div class="card-title">
-        <div class="card-title-text"><span class="card-title-dot" style="background:#22C55E"></span>판매 TOP 3 날짜</div>
-        <span style="font-size:11px;font-weight:500;color:var(--text-sub)">매출 기준</span>
+        <div class="card-title-text"><span class="card-title-dot" style="background:#22C55E"></span>판매 시간대 TOP 3</div>
+        <span style="font-size:11px;font-weight:500;color:var(--text-sub)">주문 건수 기준</span>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px" id="bestDays"></div>
+      <div id="bestHours"></div>
     </div>
   </div>
 
@@ -911,23 +911,40 @@ function renderBest(orders) {
       <div class="best-qty">${qty.toLocaleString()}개</div>
     </li>`).join('');
 
-  // Top 3 days by paid revenue
-  const dayMap = {};
-  orders.forEach(o => { dayMap[o.date] = (dayMap[o.date]||0) + o.paid; });
-  const dayEmoji = ['🥇','🥈','🥉'];
-  const topDays = Object.entries(dayMap).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  document.getElementById('bestDays').innerHTML = topDays.map(([date,amt],i)=>{
-    const d = new Date(date);
-    const dow = ['일','월','화','수','목','금','토'][d.getDay()];
-    return `<div class="day-item">
-      <div class="day-rank">${dayEmoji[i]}</div>
+  // Hour stats — computed from all Excel files (static, not filter-dependent)
+  const HOUR_STATS = [
+    {h:0,cnt:1},{h:1,cnt:3},{h:2,cnt:3},{h:4,cnt:2},{h:6,cnt:1},
+    {h:7,cnt:1},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:2},{h:11,cnt:1},
+    {h:12,cnt:4},{h:14,cnt:1},{h:15,cnt:3},{h:16,cnt:2},{h:17,cnt:5},
+    {h:19,cnt:2},{h:20,cnt:4},{h:21,cnt:9},{h:22,cnt:7},{h:23,cnt:5}
+  ];
+  const maxCnt = Math.max(...HOUR_STATS.map(x=>x.cnt));
+  const top3 = [...HOUR_STATS].sort((a,b)=>b.cnt-a.cnt).slice(0,3);
+  const medals = ['🥇','🥈','🥉'];
+  const hourLabel = h => {
+    const ampm = h < 12 ? '오전' : '오후';
+    const h12 = h===0?12:h>12?h-12:h;
+    return `${ampm} ${h12}시`;
+  };
+  const topHtml = top3.map((x,i)=>`
+    <div class="day-item" style="margin-bottom:0">
+      <div class="day-rank">${medals[i]}</div>
       <div style="flex:1">
-        <div class="day-name">${date} (${dow})</div>
-        <div class="day-sub">매출 ${orders.filter(o=>o.date===date).reduce((s,o)=>s+o.qty,0)}개 판매</div>
+        <div class="day-name">${hourLabel(x.h)} <span style="font-size:11px;color:var(--text-sub)">(${String(x.h).padStart(2,'0')}:00)</span></div>
+        <div class="best-bar-wrap" style="margin-top:5px"><div class="best-bar" style="width:${Math.round(x.cnt/maxCnt*100)}%;background:linear-gradient(90deg,#22C55E,#4ADE80)"></div></div>
       </div>
-      <div class="day-amt">${fmt(amt)}원</div>
-    </div>`;
-  }).join('');
+      <div class="day-amt">${x.cnt}건</div>
+    </div>`).join('');
+  const allBarsHtml = `<div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px">
+    <div style="font-size:10px;font-weight:600;color:var(--text-sub);margin-bottom:8px;letter-spacing:0.06em">전체 시간대 분포</div>
+    <div style="display:flex;align-items:flex-end;gap:3px;height:40px">
+      ${HOUR_STATS.map(x=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <div style="width:100%;background:${top3.find(t=>t.h===x.h)?'#22C55E':'#C4B5FD'};border-radius:2px 2px 0 0;height:${Math.round(x.cnt/maxCnt*36)}px;min-height:2px"></div>
+        <div style="font-size:8px;color:var(--text-sub)">${x.h}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+  document.getElementById('bestHours').innerHTML = `<div style="display:flex;flex-direction:column;gap:8px">${topHtml}</div>${allBarsHtml}`;
 }
 
 function updateAll() {
