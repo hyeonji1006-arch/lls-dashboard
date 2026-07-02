@@ -625,6 +625,20 @@ const ORDERS = [
   {ch:'루밍', code:'LLS_3_GR01', paid:158000, qty:2, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
   {ch:'루밍', code:'LLS_3_BL01', paid:395000, qty:5, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
   {ch:'루밍', code:'LLS_3_BK01', paid:395000, qty:5, date:'2026-06-15', addr:'서울 서초구 명달로 95 NK빌딩 B1F'},
+  // 0702 CJ 주문
+  {ch:'공식몰',  code:'LLS_C_BK01',  paid:93100,  qty:1, date:'2026-07-02', addr:'서울 강동구 풍성로 203 (성내동, 둔촌역아치스톤) 101동 705호'},
+  {ch:'공식몰',  code:'LLS_3_BL01',  paid:67545,  qty:1, date:'2026-07-01', addr:'경기 성남시 수정구 위례동로 15 (창곡동, 힐스테이트 위례) 5704동504호'},
+  {ch:'공식몰',  code:'LLS_3_BK01',  paid:135090, qty:2, date:'2026-07-01', addr:'경기 성남시 수정구 위례동로 15 (창곡동, 힐스테이트 위례) 5704동504호'},
+  {ch:'공식몰',  code:'LLS_C_BK01',  paid:98000,  qty:1, date:'2026-07-01', addr:'대구광역시 남구 중앙대로51길 26 (대명동) 1층'},
+  {ch:'컬렉션B', code:'LLS_3_GR01',  paid:71100,  qty:1, date:'2026-07-02', addr:'서울특별시 강남구 자곡로3길 21(자곡동, 강남자곡 힐스테이트) 503동 240호'},
+  {ch:'컬렉션B', code:'LLS_ctoc_GR', paid:12530,  qty:1, date:'2026-07-02', addr:'경기도 과천시 과천대로8길 65(갈현동, 과천푸르지오 벨라르테) 601동 1302호'},
+  {ch:'컬렉션B', code:'LLS_ctoc_BK', paid:12530,  qty:1, date:'2026-07-02', addr:'경기도 과천시 과천대로8길 65(갈현동, 과천푸르지오 벨라르테) 601동 1302호'},
+  {ch:'컬렉션B', code:'LLS_PKG_GR',  paid:100730, qty:1, date:'2026-07-01', addr:'경기도 부천시 원미구 신흥로 190-1(중동) 위브더스테이트 202동 902호'},
+  {ch:'컬렉션B', code:'LLS_C_BK01',  paid:88200,  qty:1, date:'2026-07-01', addr:'경기도 남양주시 다산지금로 202 (다산동) 현대테라타워B동 4층 4호'},
+  {ch:'EQL',     code:'LLS_3_OR01',  paid:79000,  qty:1, date:'2026-07-01', addr:'경기도 시흥시 수인로3312번길 16 (대야동, 시흥 센트럴 푸르지오) 105동 2005호'},
+  // 네이버 0702 스마트스토어
+  {ch:'네이버',  code:'LLS_C_GR01',  paid:93100,  qty:1, date:'2026-07-01', addr:'서울특별시 양천구 신목로 45-1 (신정동) 로컬커피스탠드'},
+  {ch:'네이버',  code:'LLS_PKG_GR',  paid:115900, qty:1, date:'2026-07-01', addr:'서울특별시 마포구 월드컵북로5나길 18 (서교동, 서교동 대우미래사랑) 720호'},
   // 네이버 0630 스마트스토어
   {ch:'네이버', code:'LLS_ctoc_BL', paid:35800, qty:2, date:'2026-06-30', addr:'서울특별시 강서구 마곡동로 110 (마곡동, 코오롱one&only타워) 2층 CMF팀'},
   {ch:'네이버', code:'LLS_3_BK_3M', paid:82000, qty:1, date:'2026-06-30', addr:'경기도 용인시 기흥구 어정로 62-7 (상하동, 갈천마을신일유토빌아파트) 101동 602호'},
@@ -949,11 +963,11 @@ function renderBest(orders) {
 
   // Hour stats — computed from all Excel files (static, not filter-dependent)
   const HOUR_STATS = [
-    {h:0,cnt:1},{h:1,cnt:4},{h:2,cnt:3},{h:4,cnt:2},{h:5,cnt:2},
-    {h:6,cnt:1},{h:7,cnt:2},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:4},
-    {h:11,cnt:3},{h:12,cnt:5},{h:13,cnt:1},{h:14,cnt:3},{h:15,cnt:3},
+    {h:0,cnt:2},{h:1,cnt:4},{h:2,cnt:3},{h:3,cnt:1},{h:4,cnt:2},{h:5,cnt:3},
+    {h:6,cnt:2},{h:7,cnt:3},{h:8,cnt:1},{h:9,cnt:2},{h:10,cnt:5},
+    {h:11,cnt:3},{h:12,cnt:6},{h:13,cnt:1},{h:14,cnt:3},{h:15,cnt:5},
     {h:16,cnt:4},{h:17,cnt:6},{h:18,cnt:1},{h:19,cnt:2},{h:20,cnt:6},
-    {h:21,cnt:12},{h:22,cnt:10},{h:23,cnt:7}
+    {h:21,cnt:13},{h:22,cnt:10},{h:23,cnt:7}
   ];
   const maxCnt = Math.max(...HOUR_STATS.map(x=>x.cnt));
   const top3 = [...HOUR_STATS].sort((a,b)=>b.cnt-a.cnt).slice(0,3);
