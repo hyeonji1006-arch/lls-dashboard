@@ -417,6 +417,14 @@
     </div>
   </div>
 
+  <!-- 수수료 리스트 -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-title">
+      <div class="card-title-text"><span class="card-title-dot" style="background:#EF4444"></span>판매처별 수수료율</div>
+    </div>
+    <div id="feeList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;padding:4px 0"></div>
+  </div>
+
   <!-- 인사이트 -->
   <div class="insight-grid">
     <div class="insight-card">
@@ -1428,6 +1436,25 @@ function renderSeeding() {
 
 buildDropdowns();
 updateAll();
+
+// 수수료 리스트 렌더링
+(function renderFeeList() {
+  const sorted = Object.entries(FEES).sort((a,b) => a[1]-b[1]);
+  document.getElementById('feeList').innerHTML = sorted.map(([ch, rate]) => {
+    const pct = (rate*100).toFixed(1).replace('.0','');
+    const color = CH_COLORS[ch] || '#9CA3AF';
+    const bg = rate === 0 ? '#F0FDF4' : rate <= 0.05 ? '#EEF9EE' : rate <= 0.15 ? '#FFF7ED' : rate >= 0.35 ? '#FEF2F2' : '#F5F3FF';
+    const tc = rate === 0 ? '#16A34A' : rate <= 0.05 ? '#15803D' : rate <= 0.15 ? '#92400E' : rate >= 0.35 ? '#DC2626' : '#6D28D9';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:${bg};border-radius:10px;border-left:3px solid ${color}">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0"></span>
+        <span style="font-size:13px;font-weight:600;color:#111827">${ch}</span>
+      </div>
+      <span style="font-size:13px;font-weight:700;color:${tc}">${pct}%</span>
+    </div>`;
+  }).join('');
+})();
+
 buildSeedingTabs();
 renderSeeding();
 renderReviews();
